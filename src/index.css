@@ -1,0 +1,71 @@
+/* -- Reset styles -- */
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+}
+ul,
+ol,
+li {
+  list-style: none;
+}
+img {
+  vertical-align: top;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1170px;
+  width: 100%;
+}
+
+
+/* -- Header -- */
+
+header {
+  background-color: grey;
+  width: auto;
+  height: 100px;
+}
+
+.nav li {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100px;
+}
+
+/* -- Main -- */
+
+main {
+  background-color: cadetblue;
+  width: auto;
+  height: 100px;
+}
+
+/* -- Footer -- */
+
+footer {
+  background-color: grey;
+  width: auto;
+  height: 100px;
+}

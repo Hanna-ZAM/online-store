@@ -1,4 +1,12 @@
 /* -- Reset styles -- */
+@font-face {
+  font-family: "Mada-Bold";
+  font-style: normal;
+  font-weight: 700;
+  /* Браузер сначала попробует найти шрифт локально */
+  src: local("Mada"),
+       url("/fontsMada-Bold.ttf") format("ttf"),
+}
 
 *,
 *::before,
@@ -8,6 +16,7 @@
   border: 0;
   box-sizing: border-box;
 }
+
 a {
   text-decoration: none;
 }
@@ -36,8 +45,10 @@ html {
   margin: 0 auto;
   max-width: 1170px;
   width: 100%;
+  font-weight: 400px;
+  font-size: 18px;
+  color: #1B0C11;
 }
-
 
 /* -- Header -- */
 
@@ -47,18 +58,59 @@ html {
   height: 100px;
 }
 
-
 .nav {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
+  width: auto;
   height: 100px;
+  margin-right: 25px;
+}
+.item{
+  position: relative;
+}
+.item__link{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+.item__text{
+  position: absolute;
+  z-index: 1;
+  font-size: 20px;
+  color: #4D7256;
+}
+
+.item__text-1{
+top:25px;
+left:25px;
+font-family: "Mada-Bold" sans-serif;
+font-weight: 700;
+}
+
+.item__text-2{
+  top:45px;
+  left:35px;
+  font-weight: 250;
+}
+
+.item__text-count{
+  top:35%;
+  left:38%;
+  color: #fff;
+}
+
+.item__text-sum{
+  top:100%;
+  text-align: center;
+  width: 60px;
+}
 /* -- Main -- */
 
 main {
-  background-color: cadetblue;
+  background: linear-gradient(292.05deg, #E4E2E3 -19.97%, #E8E8E8 36.86%);
   width: auto;
   height: 100px;
 }
@@ -66,7 +118,18 @@ main {
 /* -- Footer -- */
 
 footer {
-  background-color: grey;
+  background-color:rgba(255, 255, 255, 0.8);
   width: auto;
   height: 100px;
 }
+
+.item__text-year{
+  font-size: 36px;
+  top:-20px
+}
+
+.item__text-git{
+  top:90%;
+  width: 90px;
+}
+

@@ -10,8 +10,8 @@ class GoodsPage extends Page {
   }
 
   render() {
-    const page = this.createPage(GoodsPage.TextObject.MainTitle);
-    this.container.append(page);
+    const title = this.createTitle(GoodsPage.TextObject.MainTitle);
+    this.container.append(title);
     return this.container;
   }
 }

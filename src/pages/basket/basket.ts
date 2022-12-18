@@ -2,7 +2,7 @@ import Page from '../../core/templates/page';
 
 class BasketPage extends Page {
   static TextObject = {
-    MainTitle: 'Basket Page',
+    MainTitle: 'Корзина',
   };
 
   constructor(id: string) {
@@ -10,8 +10,9 @@ class BasketPage extends Page {
   }
 
   render() {
-    const page = this.createPage(BasketPage.TextObject.MainTitle);
-    this.container.append(page);
+    const title = this.createTitle(BasketPage.TextObject.MainTitle);
+    title.classList.add('main__title');
+    this.container.append(title);
     return this.container;
   }
 }

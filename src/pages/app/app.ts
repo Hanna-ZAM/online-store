@@ -3,7 +3,7 @@ import MainPage from '../main/main';
 import GoodsPage from '../goods/goods';
 import BasketPage from '../basket/basket';
 import ErrorPage, { ErrorTypes } from '../error/error';
-import {productsList} from '../../core/templates/product';
+import productsList from '../../core/templates/product';
 
 export const enum PageIds {
   MainPage = 'main-page',
@@ -11,10 +11,9 @@ export const enum PageIds {
   BasketPage = 'basket-page',
 }
 
-export const itemsInBasket:Array<number>=[]; //- здесь будут Id товаров, которые добавлены в корзину
+export const itemsInBasket:Array<number>=[1,2,3]; //- здесь будут Id товаров, которые добавлены в корзину
 
 export const countItemInBasket= document.querySelector('.item__text-count');
-countItemInBasket.innerHTML=itemsInBasket.length;
 export const sumItemInBasket= document.querySelector('.item__text-sum');
 
 
@@ -44,6 +43,7 @@ class App {
   private enableRouteChange() {
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash.slice(1);
+      console.log(hash);
       App.renderNewPage(hash);
     });
   }

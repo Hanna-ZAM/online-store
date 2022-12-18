@@ -1,5 +1,5 @@
 type ProductType={
-    id:string,
+    id:number,
     title:string,
     description:string,
     price:number,
@@ -12,7 +12,7 @@ type ProductType={
     images:Array<string>
 }
 type ProductsListType={
-    products:ProductType,
+    products:Array<ProductType>,
     total:number,
     skip:number,
     limit: number

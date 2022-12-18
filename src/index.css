@@ -1,13 +1,12 @@
 /* -- Reset styles -- */
-@font-face {
+/*@font-face {
   font-family: "Mada-Bold";
   font-style: normal;
   font-weight: 700;
-  /* Браузер сначала попробует найти шрифт локально */
+
   src: local("Mada"),
        url("/fontsMada-Bold.ttf") format("ttf"),
-}
-
+}*/
 *,
 *::before,
 *::after {
@@ -112,9 +111,124 @@ font-weight: 700;
 main {
   background: linear-gradient(292.05deg, #E4E2E3 -19.97%, #E8E8E8 36.86%);
   width: auto;
-  height: 100px;
+  height: fit-content;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
+.root{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flex-container{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.flex-container-space{
+  justify-content: space-between;
+}
+
+.button{
+  padding: 10px 20px;
+  background-color: #72927A;
+  border: 1.5px solid #72927A;
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+}
+.button-anti{
+  background-color:rgba(255, 255, 255, 0.0);
+  color: #72927A;
+}
+
+.flex-container-colomn{
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: fit-content;
+}
+
+.h1{
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/*--Basket--*/
+.basket-list{
+  display: flex;
+  flex-direction: column;
+}
+
+.basket-item{
+  background: #F2F2F2;
+  margin: 10px 0;
+  padding: 15px;
+}
+
+.items-per-page{
+  width: 25px;
+  height: 20px;
+}
+
+.basket-item__del{
+  text-align: end;
+}
+
+.basket-item__img{
+  width: 150px;
+}
+
+.basket-item__title{
+  text-align: start;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.flex-container-colomn{
+  margin-left: 5%;
+  margin-right: 50%;
+}
+
+.square{
+  width: 43px;
+  height: 43px;
+  background-color: #fff;
+  padding: 13px;
+  text-align: center;
+}
+.basket-item__count{
+  width: fit-content;
+  height: 43px;
+  padding: 13px;
+  text-align: center;
+}
+
+.basket-item__sum{
+  width: fit-content;
+  min-width: 90px;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 13px;
+  text-align: center;
+}
+
+.promocode{
+  width: 280px;
+  height: 40px;
+  padding: 15px;
+  margin: 20px 0;
+}
+
+.total{
+  font-size: 36px;
+  font-weight: 600;
+  margin-top: 20px;
+}
 /* -- Footer -- */
 
 footer {

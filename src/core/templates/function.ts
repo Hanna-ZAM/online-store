@@ -1,4 +1,4 @@
-import {itemsInBasket, countItemInBasket, sumItemInBasket} from '../../pages/app/app';
+import {itemsInBasket, countItemInBasket, sumItemInBasket, uniqueItemsInBasket} from '../../pages/app/app';
 import productsList from '../../core/templates/product';
 
 export function changeBasket(Id:number, add:boolean=true):Array<number>{
@@ -10,4 +10,10 @@ export function changeBasket(Id:number, add:boolean=true):Array<number>{
   countItemInBasket!.innerHTML=itemsInBasket.length.toString();
   sumItemInBasket!.innerHTML=`${itemsInBasket.reduce((acc:number, el:number):number => (acc + productsList.products[el-1].price), 0).toString()} $`;
   return itemsInBasket;
+}
+export function createUniqueItemsInBasket (arr:Array<number>):Set<number> {
+  arr.forEach(el => {
+    uniqueItemsInBasket.add(el);
+  });
+  return uniqueItemsInBasket
 }

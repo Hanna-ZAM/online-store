@@ -1,3 +1,4 @@
+
 type ProductType = {
   id: number;
   title: string;
@@ -1888,4 +1889,4 @@ const productsList: ProductsListType = {
   skip: 0,
   limit: 100,
 };
-export default productsList;
+

@@ -3,7 +3,8 @@ import MainPage from '../main/main';
 import GoodsPage from '../goods/goods';
 import BasketPage from '../basket/basket';
 import ErrorPage, { ErrorTypes } from '../error/error';
-import {productsList} from '../../core/templates/product';
+import productsList from '../../core/templates/product';
+import {createUniqueItemsInBasket} from '../../core/templates/function';
 
 export const enum PageIds {
   MainPage = 'main-page',
@@ -11,11 +12,14 @@ export const enum PageIds {
   BasketPage = 'basket-page',
 }
 
-export const itemsInBasket:Array<number>=[]; //- здесь будут Id товаров, которые добавлены в корзину
+export const itemsInBasket:Array<number>=[1,2,3, 1, 4, 5,3]; //- здесь будут Id товаров, которые добавлены в корзину
+export let uniqueItemsInBasket=new Set<number>(); //- здесь будут Id товаров, которые добавлены в корзину
 
 export const countItemInBasket= document.querySelector('.item__text-count');
-countItemInBasket.innerHTML=itemsInBasket.length;
+
+
 export const sumItemInBasket= document.querySelector('.item__text-sum');
+/*sumItemInBasket!.innerHTML=`${itemsInBasket.reduce((acc:number, el:number):number => (acc + productsList.products[el-1].price), 0).toString()} $`;*/
 
 
 class App {
@@ -44,6 +48,7 @@ class App {
   private enableRouteChange() {
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash.slice(1);
+      console.log(hash);
       App.renderNewPage(hash);
     });
   }
@@ -51,6 +56,10 @@ class App {
   run() {
     this.enableRouteChange();
     App.renderNewPage('main-page');
+    uniqueItemsInBasket=createUniqueItemsInBasket(itemsInBasket);
+    countItemInBasket!.innerHTML=itemsInBasket.length.toString();
+    console.log(countItemInBasket!.innerHTML);
+    sumItemInBasket!.innerHTML=`${itemsInBasket.reduce((acc:number, el:number):number => (acc + productsList.products[el-1].price), 0).toString()} $`;
   }
 }
 

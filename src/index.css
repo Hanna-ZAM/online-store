@@ -1,13 +1,12 @@
 /* -- Reset styles -- */
-@font-face {
+/*@font-face {
   font-family: "Mada-Bold";
   font-style: normal;
   font-weight: 700;
-  /* Браузер сначала попробует найти шрифт локально */
+
   src: local("Mada"),
        url("/fontsMada-Bold.ttf") format("ttf"),
-}
-
+}*/
 *,
 *::before,
 *::after {
@@ -99,7 +98,7 @@ font-weight: 700;
 .item__text-count{
   top:35%;
   left:38%;
-  color: #fff;
+  color: rgb(226, 44, 44);
 }
 
 .item__text-sum{
@@ -110,9 +109,14 @@ font-weight: 700;
 /* -- Main -- */
 
 
-.main {
-  background-color: #F8F8F8;
+main {
+  background: linear-gradient(292.05deg, #E4E2E3 -19.97%, #E8E8E8 36.86%);
+  width: auto;
+  height: fit-content;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
+
 .main__title {
   font-family:'Montserrat', sans-serif;
   font-style: normal;
@@ -121,8 +125,138 @@ font-weight: 700;
   line-height: 160%;
   color: #1B0C11;
   padding: 70px 0 70px 0;
+
+}
+.root{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
+.flex-container{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.flex-container-space{
+  justify-content: space-between;
+}
+
+.button{
+  padding: 10px 20px;
+  background-color: #72927A;
+  border: 1.5px solid #72927A;
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+}
+.button-anti{
+  background-color:rgba(255, 255, 255, 0.0);
+  color: #72927A;
+}
+
+.flex-container-colomn{
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: fit-content;
+}
+
+.h1{
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/*--Basket--*/
+.basket-list{
+  display: flex;
+  flex-direction: column;
+}
+
+.basket-item{
+  background: #F2F2F2;
+  margin: 10px 0;
+  padding: 15px;
+}
+
+.items-per-page{
+  width: 43px;
+  height: 43px;
+  background-color: #fff;
+  padding: 13px;
+  padding-right: 0;
+  text-align: center;
+  font-size: 20px;
+}
+
+.basket-item__del{
+  text-align: end;
+}
+
+.basket-item__img{
+  width: 150px;
+}
+
+.basket-item__title{
+  width: 300px;
+  text-align: start;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.flex-container-colomn{
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.square{
+  width: 43px;
+  height: 43px;
+  background-color: #fff;
+  padding: 10px 13px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.basket-item__count{
+  width: fit-content;
+  height: 43px;
+  padding: 13px;
+  text-align: center;
+}
+
+.basket-item__total{
+  width: fit-content;
+  min-width: 90px;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 0 13px;
+  text-align: center;
+}
+.basket-item__price{
+  width: fit-content;
+  text-decoration:line-through;
+  min-width: 90px;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0 13px;
+  text-align: center;
+  color: gray;
+}
+
+.promocode{
+  width: 280px;
+  height: 40px;
+  padding: 15px;
+  margin: 20px 0;
+}
+
+.total{
+  font-size: 36px;
+  font-weight: 600;
+  margin-top: 20px;
+}
 /* -- Footer -- */
 
 footer {

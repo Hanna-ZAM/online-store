@@ -75,7 +75,7 @@ class BasketPage extends Page {
     itemsPerPage.setAttribute('value', '3');
     itemsPerPage.setAttribute('type', 'number');
     let pageNum=1;
-    let pageCount=Math.ceil(uniqueItemsInBasket.size/Number(itemsPerPage.value));
+    let pageCount=Math.ceil(uniqueItemsInBasket.size/Number((itemsPerPage as HTMLInputElement).value));
     const flexContainer3=this.createElement('', 'div', 'flex-container');
     const arrowPlus=this.createElement(`<`, 'span', 'square');
     const countPage=this.createElement(` Page ${pageNum} from ${pageCount} `, 'p', 'p');
@@ -91,13 +91,13 @@ class BasketPage extends Page {
     let countItem=0;
 
     const basketList=this.createElement('', 'ul', 'basket-list');
-    for (let i=(pageNum-1)*itemsPerPage.value; i<itemsInBasket.length; i++) {
+    for (let i=(pageNum-1)*Number((itemsPerPage as HTMLInputElement).value); i<itemsInBasket.length; i++) {
       if (!itemsInBasket.slice(0, i).includes(itemsInBasket[i])){
         const item = this.createBasketItem(i);
         basketList.appendChild(item);
         countItem++;
       }
-      if (countItem===Number(itemsPerPage.value)){
+      if (countItem===Number((itemsPerPage as HTMLInputElement).value)){
         i=itemsInBasket.length;
       }
     }
@@ -117,7 +117,7 @@ class BasketPage extends Page {
     this.container.append(flexContainer2);
 
     const discount=this.createElement('Discount: 0', 'p', 'discount');
-    const total=this.createElement(`Total price: ${sumItemInBasket.innerHTML}`, 'p', 'total');
+    const total=this.createElement(`Total price: ${sumItemInBasket!.innerHTML}`, 'p', 'total');
 
     this.container.append(discount);
     this.container.append(total);

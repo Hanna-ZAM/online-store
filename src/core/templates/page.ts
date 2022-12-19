@@ -14,7 +14,7 @@ abstract class Page {
     return page;
   }
 
-  protected createElement(text: string, type:string, style:string) {
+  protected createElement(text: string, type:string, style:string){
     const element = document.createElement(type);
     element.classList.add(style);
     element.innerText = text;

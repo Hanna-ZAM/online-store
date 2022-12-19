@@ -17,8 +17,8 @@ class ErrorPage extends Page {
   }
 
   render() {
-    const page = this.createPage(ErrorPage.TextObject[this.errorType]);
-    this.container.append(page);
+    const title = this.createTitle(ErrorPage.TextObject[this.errorType]);
+    this.container.append(title);
     return this.container;
   }
 }

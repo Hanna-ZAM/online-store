@@ -7,7 +7,7 @@ import {createUniqueItemsInBasket} from '../../core/templates/function';
 
 class BasketPage extends Page {
   static TextObject = {
-    MainTitle: 'Basket Page',
+    MainTitle: 'Корзина',
   };
 
   constructor(id: string) {
@@ -66,8 +66,9 @@ class BasketPage extends Page {
 
   render() {
 
-    console.log(uniqueItemsInBasket);
-    const title = this.createPage(BasketPage.TextObject.MainTitle);
+
+    const title = this.createTitle(BasketPage.TextObject.MainTitle);
+    title.classList.add('main__title');
     this.container.append(title);
     const flexContainer1=this.createElement('', 'div', 'flex-container');
     flexContainer1.classList.add('flex-container-space');

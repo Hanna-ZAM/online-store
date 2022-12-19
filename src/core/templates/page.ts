@@ -7,11 +7,12 @@ abstract class Page {
     this.container.id = id;
   }
 
-  protected createPage(text: string) {
-    const page = document.createElement('h1');
-    page.classList.add('h1');
-    page.innerText = text;
-    return page;
+
+
+  protected createTitle(text: string) {
+    const title = document.createElement('h1');
+    title.innerText = text;
+    return title;
   }
 
   protected createElement(text: string, type:string, style:string){

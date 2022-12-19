@@ -1,12 +1,5 @@
 /* -- Reset styles -- */
-/*@font-face {
-  font-family: "Mada-Bold";
-  font-style: normal;
-  font-weight: 700;
 
-  src: local("Mada"),
-       url("/fontsMada-Bold.ttf") format("ttf"),
-}*/
 *,
 *::before,
 *::after {
@@ -44,7 +37,9 @@ html {
   margin: 0 auto;
   max-width: 1170px;
   width: 100%;
-  font-weight: 400px;
+  font-weight: 400;
+  font-family:'Montserrat', sans-serif;
+  font-style: normal;
   font-size: 18px;
   color: #1B0C11;
 }
@@ -104,7 +99,7 @@ font-weight: 700;
 .item__text-sum{
   top:100%;
   text-align: center;
-  width: 60px;
+  width: 70px;
 }
 /* -- Main -- */
 

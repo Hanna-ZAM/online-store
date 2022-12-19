@@ -109,10 +109,18 @@ font-weight: 700;
 }
 /* -- Main -- */
 
-main {
-  background: linear-gradient(292.05deg, #E4E2E3 -19.97%, #E8E8E8 36.86%);
-  width: auto;
-  height: 100px;
+
+.main {
+  background-color: #F8F8F8;
+}
+.main__title {
+  font-family:'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 160%;
+  color: #1B0C11;
+  padding: 70px 0 70px 0;
 }
 
 /* -- Footer -- */

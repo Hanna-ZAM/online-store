@@ -1,6 +1,7 @@
 import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
 import { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
+import {changeBasket } from '../../core/templates/function';
 
 class BasketPage extends Page {
   static TextObject = {
@@ -13,6 +14,7 @@ class BasketPage extends Page {
 
   createBasketItem(n: number) {
     const item = this.createElement('', 'li', 'basket-item');
+    item.setAttribute('id', `${itemsInBasket[n]}`);
     const buttonDel = this.createElement('Delete X', 'p', 'basket-item__del');
     const itemContainer = this.createElement('', 'div', 'flex-container');
     itemContainer.classList.add('flex-container-space');
@@ -41,12 +43,12 @@ class BasketPage extends Page {
     const flexContainerCount = this.createElement('', 'div', 'flex-container');
     flexContainerCount.classList.add('flex-container-space');
 
-    const buttonPlus = this.createElement(`+`, 'span', 'square');
-    const countItem = this.createElement(`${count}`, 'p', 'basket-item__count');
     const buttonMinus = this.createElement(`-`, 'span', 'square');
-    flexContainerCount.appendChild(buttonPlus);
-    flexContainerCount.appendChild(countItem);
+    const countItem = this.createElement(`${count}`, 'p', 'basket-item__count');
+    const buttonPlus = this.createElement(`+`, 'span', 'square');
     flexContainerCount.appendChild(buttonMinus);
+    flexContainerCount.appendChild(countItem);
+    flexContainerCount.appendChild(buttonPlus);
 
     const flexContainerTotal = this.createElement('', 'div', 'flex-container');
     flexContainerTotal.classList.add('flex-container-colomn');
@@ -108,6 +110,38 @@ class BasketPage extends Page {
         const item = this.createBasketItem(i);
         basketList.appendChild(item);
         countItem++;
+        const btnMinus = item.children[1].children[2].children[0].children[0];
+        const btnPlus = item.children[1].children[2].children[0].children[2];
+
+        btnMinus.addEventListener('click', (e) => {
+          let count = item.children[1].children[2].children[0].children[1].innerHTML;
+          const id = Number(item.id);
+          console.log(i)
+          const price = productsList.products[id - 1].price;
+          if (count !== '1') {
+            item.children[1].children[2].children[0].children[1].innerHTML = (Number(count) - 1).toString();
+            item.children[1].children[2].children[0].children[3].children[0].innerHTML = `${Number(item.children[1].children[2].children[0].children[1].innerHTML)*price} $`;
+            console.log(itemsInBasket);
+            const numEl=itemsInBasket.indexOf(+id);
+            changeBasket(id, false);
+            console.log(itemsInBasket);
+          }
+        });
+
+        btnPlus.addEventListener('click', (e) => {
+          let count = item.children[1].children[2].children[0].children[1].innerHTML;
+          const id = Number(item.id);
+          const price = productsList.products[id - 1].price;
+          if (Number(count)<= productsList.products[id - 1].stock) {
+            item.children[1].children[2].children[0].children[1].innerHTML = (Number(count) + 1).toString();
+            item.children[1].children[2].children[0].children[3].children[0].innerHTML = `${Number(item.children[1].children[2].children[0].children[1].innerHTML)*price} $`;
+            console.log(itemsInBasket);
+            const numEl=itemsInBasket.indexOf(+id);
+            changeBasket(id, true);
+            console.log(itemsInBasket);
+
+          }
+        });
       }
       if (countItem === Number((itemsPerPage as HTMLInputElement).value)) {
         i = itemsInBasket.length;
@@ -130,6 +164,9 @@ class BasketPage extends Page {
 
     const discount = this.createElement('Discount: 0', 'p', 'discount');
     const total = this.createElement(`Total price: ${sumItemInBasket!.innerHTML}`, 'p', 'total');
+    document.addEventListener('click', e=>{
+      total.innerHTML=`Total price: ${sumItemInBasket!.innerHTML}`
+    })
 
     this.container.append(discount);
     this.container.append(total);

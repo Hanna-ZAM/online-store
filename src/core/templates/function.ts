@@ -47,3 +47,12 @@ export function changeQuantity(item: HTMLElement, direction: string): HTMLElemen
   }
   return item;
 }
+export function deleteItemFromBasket(id: number, arr: Array<number>): Set<number> {
+  const n = arr.indexOf(id);
+  arr.splice(n, 1);
+  const result = new Set(arr);
+  while (itemsInBasket.includes(id)) {
+    changeBasket(id, false);
+  }
+  return result;
+}

@@ -1,6 +1,7 @@
 import './main.css';
 import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
+import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 
 class MainPage extends Page {
   static TextObject = {
@@ -45,6 +46,11 @@ class MainPage extends Page {
     cardContainer.append(btnAddBasket);
     cardContainer.append(cardName);
     cardContainer.append(cardPrice);
+
+    btnAddBasket.addEventListener('click', () => {
+      itemsInBasket.push(productsList.products[i].id);
+      uniqueItemsInBasket.add(productsList.products[i].id);
+    });
 
     return cardContainer;
   }

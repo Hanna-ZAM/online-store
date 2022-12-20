@@ -20,6 +20,13 @@ abstract class Page {
     return element;
   }
 
+  protected createElementId(text: string, type: string, id: string) {
+    const element = document.createElement(type);
+    element.id = id;
+    element.innerText = text;
+    return element;
+  }
+
   createBasketItem?(n: number) {
     for (let i = 0; i < n; i++) {
       const item = this.createElement('', 'li', 'basket-item');

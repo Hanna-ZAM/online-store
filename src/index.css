@@ -140,7 +140,7 @@ main {
 }
 
 .button{
-  padding: 10px 20px;
+  padding: 20px 30px;
   background-color: #72927A;
   border: 1.5px solid #72927A;
   color: #fff;
@@ -150,6 +150,7 @@ main {
 .button-anti{
   background-color:rgba(255, 255, 255, 0.0);
   color: #72927A;
+  margin-left: 30px;
 }
 
 .flex-container-colomn{
@@ -162,6 +163,9 @@ main {
 .h1{
   font-size: 36px;
   font-weight: 700;
+}
+.page-end{
+  margin-bottom: 100px;
 }
 
 /*--Basket--*/
@@ -244,13 +248,16 @@ main {
   width: 280px;
   height: 40px;
   padding: 15px;
-  margin: 20px 0;
+  margin: 40px 0 20px 0;
 }
 
+.discount{
+  margin: 20px 0;
+}
 .total{
   font-size: 36px;
   font-weight: 600;
-  margin-top: 20px;
+  margin: 20px 0 40px 0;
 }
 /* -- Footer -- */
 

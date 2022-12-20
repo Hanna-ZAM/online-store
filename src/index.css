@@ -223,7 +223,7 @@ main {
 
 .basket-item__total{
   width: fit-content;
-  min-width: 90px;
+  min-width: 100px;
   font-size: 20px;
   font-weight: 600;
   padding: 0 13px;

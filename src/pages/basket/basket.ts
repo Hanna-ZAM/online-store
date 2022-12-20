@@ -91,12 +91,21 @@ class BasketPage extends Page {
         basketList.removeChild(element);
       });
     }
-    const start = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value);
+   
+    let pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
+    if (pageNum>pageCount){
+      pageNum= pageCount
+    }
+    let start = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value);
+    if( uniqueItemsInBasket.size===0) {
+      const item = this.createElement('Basket is empty', 'li', 'basket-item');
+      basketList.appendChild(item);
+    }
+
     let end = start + Number((itemsPerPage as HTMLInputElement).value);
     if (end > uniqueItemsInBasket.size) {
       end = uniqueItemsInBasket.size;
     }
-    const pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
     countPage.innerHTML = ` Page ${pageNum} from ${pageCount} `;
 
     for (let i = start; i < end; i++) {
@@ -116,7 +125,6 @@ class BasketPage extends Page {
         if (item.children[1].children[2].children[0].children[1].innerHTML === '1') {
           console.log('deee' + item.id);
           uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
-          console.log(uniqueItemsInBasket);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
         } else {
           changeQuantity(item, 'down');
@@ -142,17 +150,29 @@ class BasketPage extends Page {
     itemsPerPage.addEventListener('input', (e) => {
       this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
     });
-    const pageNum = 1;
-    const pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
+    let pageNum = 1;
+    let pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
     const flexContainer3 = this.createElement('', 'div', 'flex-container');
-    const arrowPlus = this.createElement(`<`, 'span', 'square');
+    const arrowMinus = this.createElement(`<`, 'span', 'square');
+    arrowMinus.addEventListener('click', e=>{
+      if (pageNum>1) {
+        pageNum--;
+       this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
+      }
+    })
     const countPage = this.createElement(` Page ${pageNum} from ${pageCount} `, 'p', 'p');
-    const arrowMinus = this.createElement(`>`, 'span', 'square');
+    const arrowPlus = this.createElement(`>`, 'span', 'square');
+    arrowPlus.addEventListener('click', e=>{
+      if (pageNum<Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value))){
+        pageNum++;
+        this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
+      }
+      })
     const itemPerPageText = this.createElement('Item per page: ', 'p', 'p');
     itemPerPageText.appendChild(itemsPerPage);
-    flexContainer3.appendChild(arrowPlus);
-    flexContainer3.appendChild(countPage);
     flexContainer3.appendChild(arrowMinus);
+    flexContainer3.appendChild(countPage);
+    flexContainer3.appendChild(arrowPlus);
     flexContainer1.appendChild(flexContainer3);
     flexContainer1.appendChild(itemPerPageText);
     this.container.append(flexContainer1);

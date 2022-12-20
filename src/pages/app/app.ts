@@ -12,7 +12,7 @@ export const enum PageIds {
   BasketPage = 'basket-page',
 }
 
-export const itemsInBasket: Array<number> = [1,4, 2, 3, 1, 4, 5, 3]; //- здесь будут Id товаров, которые добавлены в корзину
+export const itemsInBasket: Array<number> = [1, 4, 2, 3, 1, 4, 5, 3]; //- здесь будут Id товаров, которые добавлены в корзину
 export let uniqueItemsInBasket = new Set<number>(); //- здесь будут Id товаров, которые добавлены в корзину
 
 export const countItemInBasket = document.querySelector('.item__text-count');

@@ -31,6 +31,24 @@ class MainPage extends Page {
     return arr;
   }
 
+  createCard(i: number) {
+    const cardContainer = this.createElement('', 'div', 'card__container');
+    const btnOpenCard = this.createElement('', 'button', 'card__open-card_btn');
+    const imgCard = this.createElement('', 'img', 'card__image');
+    imgCard.setAttribute('src', `${productsList.products[i].thumbnail}`);
+    const btnAddBasket = this.createElement('add to cart', 'button', 'card__add-basket_btn');
+    const cardName = this.createElement(`${productsList.products[i].title}`, 'div', 'card__name');
+    const cardPrice = this.createElement(`${productsList.products[i].price} $`, 'div', 'card__price');
+
+    cardContainer.appendChild(btnOpenCard);
+    btnOpenCard.append(imgCard);
+    cardContainer.append(btnAddBasket);
+    cardContainer.append(cardName);
+    cardContainer.append(cardPrice);
+
+    return cardContainer;
+  }
+
   render() {
     const title = this.createTitle(MainPage.TextObject.MainTitle);
     title.classList.add('main__title');
@@ -184,6 +202,13 @@ class MainPage extends Page {
     sortSearch.setAttribute('type', 'search');
     sortSearch.setAttribute('placeholder', 'Search');
     sortContainer.appendChild(sortSearch);
+
+    const productContainer = this.createElement('', 'div', 'product__container');
+    this.container.appendChild(productContainer);
+
+    for (let i = 0; i < productsList.products.length; i += 1) {
+      productContainer.appendChild(this.createCard(i));
+    }
 
     return this.container;
   }

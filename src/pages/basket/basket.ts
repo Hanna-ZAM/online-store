@@ -59,7 +59,14 @@ class BasketPage extends Page {
       'p',
       'basket-item__total'
     );
+    const price = this.createElement(
+      `${productsList.products[itemsInBasket[n] - 1].price * Number(countItem.innerHTML)} $`,
+      'p',
+      'basket-item__price'
+    );
+    price.classList.add('no-visible');
     flexContainerTotal.appendChild(priceTotal);
+    flexContainerTotal.appendChild(price);
     flexContainerCount.appendChild(flexContainerTotal);
 
     const categoryStock = this.createElement(
@@ -186,6 +193,15 @@ class BasketPage extends Page {
     promocode.setAttribute('placeholder', 'promocode');
     promocode.setAttribute('type', 'text');
     this.container.append(promocode);
+    promocode.addEventListener('input', e=>{
+      console.log((promocode as HTMLInputElement).value);
+      for (let i=0; i<basketList.children.length; i++){
+      let priceIt =basketList.children[i].children[1].children[2].children[0].children[3].children[1];
+      let totalPrice =basketList.children[i].children[1].children[2].children[0].children[3].children[0];
+      priceIt.classList.remove('no-visible');
+      totalPrice.innerHTML=`${(Math.ceil(Number(priceIt.innerHTML.split(' ')[0])*(100-Number((promocode as HTMLInputElement).value))/100)).toString()} $`
+      }
+      })
 
     const flexContainer2 = this.createElement('', 'div', 'flex-container');
     flexContainer2.classList.add('page-end');

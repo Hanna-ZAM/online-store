@@ -277,3 +277,6 @@ footer {
   width: 90px;
 }
 
+.no-visible{
+  display: none;
+}

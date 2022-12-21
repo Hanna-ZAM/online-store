@@ -4,7 +4,6 @@ import { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages
 
 import { changeBasket, changeQuantity, deleteItemFromBasket } from '../../core/templates/function';
 
-
 class BasketPage extends Page {
   static TextObject = {
     MainTitle: 'Basket',
@@ -18,7 +17,7 @@ class BasketPage extends Page {
     const item = this.createElement('', 'li', 'basket-item');
     item.setAttribute('id', `${[...uniqueItemsInBasket][n]}`);
     const buttonDel = this.createElement('Delete X', 'p', 'basket-item__del');
-  
+
     const itemContainer = this.createElement('', 'div', 'flex-container');
     itemContainer.classList.add('flex-container-space');
     const itemImg = this.createElement('', 'img', 'basket-item__img');
@@ -93,13 +92,13 @@ class BasketPage extends Page {
         basketList.removeChild(element);
       });
     }
-   
-    let pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
-    if (pageNum>pageCount){
-      pageNum= pageCount
+
+    const pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
+    if (pageNum > pageCount) {
+      pageNum = pageCount;
     }
-    let start = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value);
-    if( uniqueItemsInBasket.size===0) {
+    const start = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value);
+    if (uniqueItemsInBasket.size === 0) {
       const item = this.createElement('Basket is empty', 'li', 'basket-item');
       basketList.appendChild(item);
     }
@@ -115,13 +114,12 @@ class BasketPage extends Page {
       basketList.appendChild(item);
       const btnMinus = item.children[1].children[2].children[0].children[0];
       const btnPlus = item.children[1].children[2].children[0].children[2];
-      const btnDel=item.children[0];
-      btnDel.addEventListener('click', e=>{
+      const btnDel = item.children[0];
+      btnDel.addEventListener('click', (e) => {
         uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
-            console.log(uniqueItemsInBasket);
-            this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
-      })
-
+        console.log(uniqueItemsInBasket);
+        this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
+      });
 
       btnMinus.addEventListener('click', (e) => {
         if (item.children[1].children[2].children[0].children[1].innerHTML === '1') {
@@ -153,23 +151,23 @@ class BasketPage extends Page {
       this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
     });
     let pageNum = 1;
-    let pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
+    const pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
     const flexContainer3 = this.createElement('', 'div', 'flex-container');
     const arrowMinus = this.createElement(`<`, 'span', 'square');
-    arrowMinus.addEventListener('click', e=>{
-      if (pageNum>1) {
+    arrowMinus.addEventListener('click', (e) => {
+      if (pageNum > 1) {
         pageNum--;
-       this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
+        this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
       }
-    })
+    });
     const countPage = this.createElement(` Page ${pageNum} from ${pageCount} `, 'p', 'p');
     const arrowPlus = this.createElement(`>`, 'span', 'square');
-    arrowPlus.addEventListener('click', e=>{
-      if (pageNum<Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value))){
+    arrowPlus.addEventListener('click', (e) => {
+      if (pageNum < Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value))) {
         pageNum++;
         this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
       }
-      })
+    });
     const itemPerPageText = this.createElement('Item per page: ', 'p', 'p');
     itemPerPageText.appendChild(itemsPerPage);
     flexContainer3.appendChild(arrowMinus);

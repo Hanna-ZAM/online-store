@@ -1,18 +1,23 @@
 import './main.css';
 import Page from '../../core/templates/page';
-import productsList from '../../core/templates/product';
+import productsList, { ProductType } from '../../core/templates/product';
 import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
+import { sorting } from '../../core/templates/sortFunctions';
 
 class MainPage extends Page {
+  sortArray: ProductType[];
+  tempArray: string[];
   static TextObject = {
     MainTitle: 'Catalog',
   };
 
   constructor(id: string) {
     super(id);
+    this.sortArray = [];
+    this.tempArray = [];
   }
 
-  filterCategory(key: string): string[] {
+  filterProduct(key: string): string[] {
     const arr: string[] = [];
 
     if (key === 'category') {
@@ -32,14 +37,14 @@ class MainPage extends Page {
     return arr;
   }
 
-  createCard(i: number) {
+  createCard(i: number, arr: ProductType[]) {
     const cardContainer = this.createElement('', 'div', 'card__container');
     const btnOpenCard = this.createElement('', 'button', 'card__open-card_btn');
     const imgCard = this.createElement('', 'img', 'card__image');
-    imgCard.setAttribute('src', `${productsList.products[i].thumbnail}`);
+    imgCard.setAttribute('src', `${arr[i].thumbnail}`);
     const btnAddBasket = this.createElement('add to cart', 'button', 'card__add-basket_btn');
-    const cardName = this.createElement(`${productsList.products[i].title}`, 'div', 'card__name');
-    const cardPrice = this.createElement(`${productsList.products[i].price} $`, 'div', 'card__price');
+    const cardName = this.createElement(`${arr[i].title}`, 'div', 'card__name');
+    const cardPrice = this.createElement(`${arr[i].price} $`, 'div', 'card__price');
 
     cardContainer.appendChild(btnOpenCard);
     btnOpenCard.append(imgCard);
@@ -48,14 +53,26 @@ class MainPage extends Page {
     cardContainer.append(cardPrice);
 
     btnAddBasket.addEventListener('click', () => {
-      itemsInBasket.push(productsList.products[i].id);
-      uniqueItemsInBasket.add(productsList.products[i].id);
+      itemsInBasket.push(arr[i].id);
+      uniqueItemsInBasket.add(arr[i].id);
+      console.log(itemsInBasket);
+      console.log(uniqueItemsInBasket);
     });
 
     return cardContainer;
   }
 
+  showCards(arrItem: ProductType[], htmlElement: HTMLElement) {
+    htmlElement.innerHTML = '';
+
+    for (let i = 0; i < arrItem.length; i += 1) {
+      htmlElement.appendChild(this.createCard(i, arrItem));
+    }
+  }
+
   render() {
+    this.sortArray = JSON.parse(JSON.stringify(productsList.products));
+
     const title = this.createTitle(MainPage.TextObject.MainTitle);
     title.classList.add('main__title');
     this.container.append(title);
@@ -89,18 +106,32 @@ class MainPage extends Page {
     filterGroupCategory1.appendChild(filterTitleCategory1);
     filterGroupCategory1.appendChild(filterGroupForm1);
 
-    const arrCategory = this.filterCategory('category');
+    const arrCategory = this.filterProduct('category');
 
     for (let i = 0; i < arrCategory.length; i += 1) {
       const elementLabel = this.createElement('', 'label', 'checkbox');
       const elementInput = document.createElement('input');
+      const elementSpan = this.createElement(`${arrCategory[i]}`, 'span', `${arrCategory[i]}`);
 
       filterGroupForm1.appendChild(elementLabel);
 
       elementLabel.appendChild(elementInput);
       elementInput.setAttribute('type', 'checkbox');
       elementInput.id = `${arrCategory[i]}`;
-      elementLabel.appendChild(this.createElementId(`${arrCategory[i]}`, 'span', `${arrCategory[i]}`));
+      elementLabel.appendChild(elementSpan);
+
+      elementSpan.addEventListener('click', () => {
+        if (!elementSpan.classList.contains('add')) {
+          this.tempArray.push(elementSpan.className);
+          elementSpan.classList.add('add');
+        } else {
+          elementSpan.classList.remove('add');
+          const index = this.tempArray.indexOf(elementSpan.className);
+          this.tempArray.splice(index, 1);
+        }
+
+        console.log(this.tempArray);
+      });
     }
 
     const filterGroupCategory2 = this.createElement('', 'div', 'filter__group_category');
@@ -112,18 +143,30 @@ class MainPage extends Page {
     filterGroupCategory2.appendChild(filterTitleCategory2);
     filterGroupCategory2.appendChild(filterGroupForm2);
 
-    const arrBrand = this.filterCategory('brand');
+    const arrBrand = this.filterProduct('brand');
 
     for (let i = 0; i < arrBrand.length; i += 1) {
       const elementLabel = this.createElement('', 'label', 'checkbox');
       const elementInput = document.createElement('input');
+      const elementSpan = this.createElementId(`${arrBrand[i]}`, 'span', `${arrBrand[i]}`);
 
       filterGroupForm2.appendChild(elementLabel);
 
       elementLabel.appendChild(elementInput);
       elementInput.setAttribute('type', 'checkbox');
       elementInput.id = `${arrBrand[i]}`;
-      elementLabel.appendChild(this.createElementId(`${arrBrand[i]}`, 'span', `${arrBrand[i]}`));
+      elementLabel.appendChild(elementSpan);
+
+      elementSpan.addEventListener('click', () => {
+        // if (!elementSpan.classList.contains('add')) {
+        //   elementSpan.classList.add('add');
+        //   this.sortArray.push(elementSpan.id);
+        // } else {
+        //   elementSpan.classList.remove('add');
+        //   let index = this.sortArray.indexOf(elementSpan.id);
+        //   this.sortArray.splice(index, 1);
+        // }
+      });
     }
 
     const filterGroupCategory3 = this.createElement('', 'div', 'filter__group_category');
@@ -181,7 +224,7 @@ class MainPage extends Page {
     const sortContainer = this.createElement('', 'div', 'sort__container');
     this.container.appendChild(sortContainer);
 
-    const sortSelect = this.createElement('', 'select', 'sort__select');
+    const sortSelect = this.createElement('', 'select', 'sort__select') as HTMLInputElement;
     sortContainer.appendChild(sortSelect);
 
     const arrOptions = [
@@ -195,7 +238,8 @@ class MainPage extends Page {
     ];
 
     for (let i = 0; i < arrOptions.length; i += 1) {
-      const sortOption = this.createElement(`${arrOptions[i]}`, 'option', `${arrOptions[i].split(' ').join('_')}`);
+      const sortOption = this.createElementId(`${arrOptions[i]}`, 'option', `${arrOptions[i].split(' ').join('_')}`);
+      sortOption.setAttribute('value', `${i}`);
 
       if (i === 0) {
         sortOption.setAttribute('disabled', 'true');
@@ -211,10 +255,12 @@ class MainPage extends Page {
 
     const productContainer = this.createElement('', 'div', 'product__container');
     this.container.appendChild(productContainer);
+    this.showCards(productsList.products, productContainer);
 
-    for (let i = 0; i < productsList.products.length; i += 1) {
-      productContainer.appendChild(this.createCard(i));
-    }
+    sortSelect.addEventListener('change', () => {
+      this.sortArray = sorting(this.sortArray, sortSelect.value);
+      this.showCards(this.sortArray, productContainer);
+    });
 
     return this.container;
   }

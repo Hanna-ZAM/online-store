@@ -1,7 +1,9 @@
 import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
 import { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
+
 import { changeBasket, changeQuantity, deleteItemFromBasket } from '../../core/templates/function';
+
 
 class BasketPage extends Page {
   static TextObject = {
@@ -186,7 +188,53 @@ class BasketPage extends Page {
     const countItem = 0;
 
     const basketList = this.createElement('', 'ul', 'basket-list');
-    this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
+
+    for (let i = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value); i < itemsInBasket.length; i++) {
+      if (!itemsInBasket.slice(0, i).includes(itemsInBasket[i])) {
+        const item = this.createBasketItem(i);
+        basketList.appendChild(item);
+        countItem++;
+        const btnMinus = item.children[1].children[2].children[0].children[0];
+        const btnPlus = item.children[1].children[2].children[0].children[2];
+
+        btnMinus.addEventListener('click', (e) => {
+          const count = item.children[1].children[2].children[0].children[1].innerHTML;
+          const id = Number(item.id);
+          console.log(i);
+          const price = productsList.products[id - 1].price;
+          if (count !== '1') {
+            item.children[1].children[2].children[0].children[1].innerHTML = (Number(count) - 1).toString();
+            item.children[1].children[2].children[0].children[3].children[0].innerHTML = `${
+              Number(item.children[1].children[2].children[0].children[1].innerHTML) * price
+            } $`;
+            console.log(itemsInBasket);
+            const numEl = itemsInBasket.indexOf(+id);
+            changeBasket(id, false);
+            console.log(itemsInBasket);
+          }
+        });
+
+        btnPlus.addEventListener('click', (e) => {
+          const count = item.children[1].children[2].children[0].children[1].innerHTML;
+          const id = Number(item.id);
+          const price = productsList.products[id - 1].price;
+          if (Number(count) <= productsList.products[id - 1].stock) {
+            item.children[1].children[2].children[0].children[1].innerHTML = (Number(count) + 1).toString();
+            item.children[1].children[2].children[0].children[3].children[0].innerHTML = `${
+              Number(item.children[1].children[2].children[0].children[1].innerHTML) * price
+            } $`;
+            console.log(itemsInBasket);
+            const numEl = itemsInBasket.indexOf(+id);
+            changeBasket(id, true);
+            console.log(itemsInBasket);
+          }
+        });
+      }
+      if (countItem === Number((itemsPerPage as HTMLInputElement).value)) {
+        i = itemsInBasket.length;
+      }
+    }
+
     this.container.append(basketList);
 
     const promocode = this.createElement('', 'input', 'promocode');

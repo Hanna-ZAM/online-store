@@ -183,4 +183,56 @@ input[type="range"] {
   color: #1B0C11;
 }
 
-
+.product__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1170px;
+  gap: 20px 20px;
+  margin: 70px 0 0 0;
+}
+.card__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #FFFFFF;
+  max-width: 277px;
+  height: 410px;
+}
+.card__image {
+  width: 277px;
+  height: 257px;
+}
+.card__open-card_btn {
+  cursor: pointer;
+}
+.card__add-basket_btn {
+  cursor: pointer;
+  height: 50px;
+  background-color: #72927A;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 160%;
+  color: #FFFFFF;
+}
+.card__name {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 160%;
+  color: #000000;
+  margin: 0 0 0 10px;
+}
+.card__price {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 160%;
+  color: #000000;
+  margin: 0 0 0 10px;
+}

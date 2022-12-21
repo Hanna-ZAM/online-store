@@ -52,6 +52,8 @@ class App {
   }
 
   run() {
+    console.log(itemsInBasket);
+
     this.enableRouteChange();
     App.renderNewPage('main-page');
     uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);

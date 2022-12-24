@@ -43,10 +43,10 @@
   overflow-y: auto;
   height: 275px;
 }
-::-webkit-scrollbar {
+.filter__group_form::-webkit-scrollbar {
   width: 6px;
 }
-::-webkit-scrollbar-thumb {
+.filter__group_form::-webkit-scrollbar-thumb {
   background-color: #405846;
 }
 .filter__group_category h4 {
@@ -118,7 +118,7 @@ span {
   background-size: auto;
 }
 .sort__search {
-  padding: 30px 0 30px 35px;
+  padding: 30px 55px 30px 35px;
   width: 50%;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
@@ -131,6 +131,7 @@ span {
   background-repeat: no-repeat, repeat;
   background-position: right 35px top 50%, 0 0;
   background-size: auto;
+  text-transform: lowercase;
 }
 .sort__search::-webkit-search-decoration,
 .sort__search::-webkit-search-cancel-button,
@@ -235,4 +236,7 @@ input[type="range"] {
   line-height: 160%;
   color: #000000;
   margin: 0 0 0 10px;
+}
+.hide {
+  display: none;
 }

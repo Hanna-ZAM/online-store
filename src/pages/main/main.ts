@@ -3,18 +3,27 @@ import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
 import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { sorting } from '../../core/templates/sortFunctions';
+import { filter, filteredItems } from '../../core/templates/filterFunctions';
 
 class MainPage extends Page {
-  sortArray: ProductType[];
-  tempArray: string[];
+  copyProducts: ProductType[];
+  tempProducts: ProductType[];
+  priceMax: number;
+  priceMin: number;
+  amountMax: number;
+  amountMin: number;
   static TextObject = {
     MainTitle: 'Catalog',
   };
 
   constructor(id: string) {
     super(id);
-    this.sortArray = [];
-    this.tempArray = [];
+    this.copyProducts = JSON.parse(JSON.stringify(productsList.products));
+    this.tempProducts = [];
+    this.priceMax = 0;
+    this.priceMin = 0;
+    this.amountMax = 0;
+    this.amountMin = 0;
   }
 
   filterProduct(key: string): string[] {
@@ -32,6 +41,16 @@ class MainPage extends Page {
           arr.push(item.brand);
         }
       });
+    } else if (key === 'price') {
+      const arr = JSON.parse(JSON.stringify(productsList.products));
+      arr.sort((a: ProductType, b: ProductType) => a.price - b.price);
+      this.priceMin = arr[0].price;
+      this.priceMax = arr[arr.length - 1].price;
+    } else if (key === 'stock') {
+      const arr = JSON.parse(JSON.stringify(productsList.products));
+      arr.sort((a: ProductType, b: ProductType) => a.stock - b.stock);
+      this.amountMin = arr[0].stock;
+      this.amountMax = arr[arr.length - 1].stock;
     }
 
     return arr;
@@ -62,17 +81,20 @@ class MainPage extends Page {
     return cardContainer;
   }
 
-  showCards(arrItem: ProductType[], htmlElement: HTMLElement) {
+  showCards(arrItem: ProductType[], htmlElement: HTMLElement, foundProduct: HTMLElement) {
     htmlElement.innerHTML = '';
-
-    for (let i = 0; i < arrItem.length; i += 1) {
-      htmlElement.appendChild(this.createCard(i, arrItem));
+    foundProduct.innerText = `Found: ${arrItem.length}`;
+    if (arrItem.length) {
+      for (let i = 0; i < arrItem.length; i += 1) {
+        htmlElement.appendChild(this.createCard(i, arrItem));
+      }
+    } else {
+      foundProduct.innerText = `Found: 0`;
+      return (htmlElement.innerHTML = 'Not found');
     }
   }
 
   render() {
-    this.sortArray = JSON.parse(JSON.stringify(productsList.products));
-
     const title = this.createTitle(MainPage.TextObject.MainTitle);
     title.classList.add('main__title');
     this.container.append(title);
@@ -85,11 +107,7 @@ class MainPage extends Page {
     filterMain.appendChild(filterHeader);
 
     const filterHeaderTitle = this.createElement('Filter', 'div', 'filter__header_title');
-    const filterHeaderAmount = this.createElement(
-      `Found: ${productsList.products.length}`,
-      'div',
-      'filter__header_amount'
-    );
+    const filterHeaderAmount = this.createElement('', 'div', 'filter__header_amount');
 
     filterHeader.appendChild(filterHeaderTitle);
     filterHeader.appendChild(filterHeaderAmount);
@@ -111,26 +129,25 @@ class MainPage extends Page {
     for (let i = 0; i < arrCategory.length; i += 1) {
       const elementLabel = this.createElement('', 'label', 'checkbox');
       const elementInput = document.createElement('input');
-      const elementSpan = this.createElement(`${arrCategory[i]}`, 'span', `${arrCategory[i]}`);
+      const elementSpan = this.createElementId(`${arrCategory[i]}`, 'span', `${arrCategory[i]}`);
 
       filterGroupForm1.appendChild(elementLabel);
 
       elementLabel.appendChild(elementInput);
       elementInput.setAttribute('type', 'checkbox');
-      elementInput.id = `${arrCategory[i]}`;
       elementLabel.appendChild(elementSpan);
 
       elementSpan.addEventListener('click', () => {
-        if (!elementSpan.classList.contains('add')) {
-          this.tempArray.push(elementSpan.className);
-          elementSpan.classList.add('add');
+        if (!filter.category.includes(elementSpan.id)) {
+          filter.category.push(elementSpan.id);
+          this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+          this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         } else {
-          elementSpan.classList.remove('add');
-          const index = this.tempArray.indexOf(elementSpan.className);
-          this.tempArray.splice(index, 1);
+          const index = filter.category.indexOf(elementSpan.id);
+          filter.category.splice(index, 1);
+          this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+          this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         }
-
-        console.log(this.tempArray);
       });
     }
 
@@ -154,18 +171,19 @@ class MainPage extends Page {
 
       elementLabel.appendChild(elementInput);
       elementInput.setAttribute('type', 'checkbox');
-      elementInput.id = `${arrBrand[i]}`;
       elementLabel.appendChild(elementSpan);
 
       elementSpan.addEventListener('click', () => {
-        // if (!elementSpan.classList.contains('add')) {
-        //   elementSpan.classList.add('add');
-        //   this.sortArray.push(elementSpan.id);
-        // } else {
-        //   elementSpan.classList.remove('add');
-        //   let index = this.sortArray.indexOf(elementSpan.id);
-        //   this.sortArray.splice(index, 1);
-        // }
+        if (!filter.brand.includes(elementSpan.id)) {
+          filter.brand.push(elementSpan.id);
+          this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+          this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+        } else {
+          const index = filter.brand.indexOf(elementSpan.id);
+          filter.brand.splice(index, 1);
+          this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+          this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+        }
       });
     }
 
@@ -175,51 +193,107 @@ class MainPage extends Page {
     const filterTitleCategory3 = this.createElement('Choose a criterion', 'h3', 'filter__group_title');
     const filterTitlePrice = this.createElement('Price $', 'h4', 'filterTitlePrice');
 
+    this.filterProduct('price');
     filterGroupCategory3.appendChild(filterTitleCategory3);
     filterGroupCategory3.appendChild(filterTitlePrice);
     const priceControl = this.createElement('', 'div', 'price__control');
     filterGroupCategory3.appendChild(priceControl);
-    const inputPriceFrom = this.createElementId('', 'input', 'fromPrice');
+    const inputPriceFrom = this.createElementId('', 'input', 'fromPrice') as HTMLInputElement;
     inputPriceFrom.setAttribute('type', 'range');
-    inputPriceFrom.setAttribute('value', '0');
-    inputPriceFrom.setAttribute('min', '0');
-    inputPriceFrom.setAttribute('max', '100');
-    const inputPriceTo = this.createElementId('', 'input', 'toPrice');
+    inputPriceFrom.setAttribute('value', `${this.priceMin}`);
+    inputPriceFrom.setAttribute('min', `${this.priceMin}`);
+    inputPriceFrom.setAttribute('max', `${this.priceMax}`);
+    const inputPriceTo = this.createElementId('', 'input', 'toPrice') as HTMLInputElement;
     inputPriceTo.setAttribute('type', 'range');
     inputPriceTo.setAttribute('value', '100');
-    inputPriceTo.setAttribute('min', '0');
-    inputPriceTo.setAttribute('max', '100');
+    inputPriceTo.setAttribute('min', `${this.priceMin}`);
+    inputPriceTo.setAttribute('max', `${this.priceMax}`);
+    inputPriceTo.value = `${this.priceMax}`;
     priceControl.appendChild(inputPriceFrom);
     priceControl.appendChild(inputPriceTo);
     const priceControlValue = this.createElement('', 'div', 'price__control_value');
     priceControl.appendChild(priceControlValue);
-    const priceControlValueFrom = this.createElement('0', 'div', 'price__control_from-value');
-    const priceControlValueTo = this.createElement('100', 'div', 'price__control_to-value');
+    const priceControlValueFrom = this.createElement(`${this.priceMin}`, 'div', 'price__control_from-value');
+    const priceControlValueTo = this.createElement(`${this.priceMax}`, 'div', 'price__control_to-value');
     priceControlValue.appendChild(priceControlValueFrom);
     priceControlValue.appendChild(priceControlValueTo);
 
-    const filterTitleAmount = this.createElement('Amount', 'h4', 'filterTitleBalance');
+    const minGap = 0;
+
+    inputPriceFrom.addEventListener('input', () => {
+      if (parseInt(inputPriceTo.value) - parseInt(inputPriceFrom.value) <= minGap) {
+        inputPriceFrom.value = (parseInt(inputPriceTo.value) - minGap).toString();
+      }
+      priceControlValueFrom.textContent = inputPriceFrom.value;
+      filter.price.min = Number(inputPriceFrom.value);
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    });
+
+    inputPriceTo.addEventListener('input', () => {
+      if (parseInt(inputPriceTo.value) - parseInt(inputPriceFrom.value) <= minGap) {
+        inputPriceTo.value = (parseInt(inputPriceFrom.value) + minGap).toString();
+      }
+      if (parseInt(inputPriceTo.value) <= this.priceMin + 10) {
+        inputPriceTo.style.zIndex = '2';
+      } else {
+        inputPriceTo.style.zIndex = '0';
+      }
+      priceControlValueTo.textContent = inputPriceTo.value;
+      filter.price.max = Number(inputPriceTo.value);
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    });
+
+    this.filterProduct('stock');
+    const filterTitleAmount = this.createElement('Stock', 'h4', 'filterTitleBalance');
     filterGroupCategory3.appendChild(filterTitleAmount);
     const amountControl = this.createElement('', 'div', 'amount__control');
     filterGroupCategory3.appendChild(amountControl);
-    const inputAmountFrom = this.createElementId('', 'input', 'fromAmount');
+    const inputAmountFrom = this.createElementId('', 'input', 'fromAmount') as HTMLInputElement;
     inputAmountFrom.setAttribute('type', 'range');
-    inputAmountFrom.setAttribute('value', '0');
-    inputAmountFrom.setAttribute('min', '0');
-    inputAmountFrom.setAttribute('max', '100');
-    const inputAmountTo = this.createElementId('', 'input', 'toAmount');
+    inputAmountFrom.setAttribute('value', `${this.amountMin}`);
+    inputAmountFrom.setAttribute('min', `${this.amountMin}`);
+    inputAmountFrom.setAttribute('max', `${this.amountMax}`);
+    const inputAmountTo = this.createElementId('', 'input', 'toAmount') as HTMLInputElement;
     inputAmountTo.setAttribute('type', 'range');
     inputAmountTo.setAttribute('value', '100');
-    inputAmountTo.setAttribute('min', '0');
-    inputAmountTo.setAttribute('max', '100');
+    inputAmountTo.setAttribute('min', `${this.amountMin}`);
+    inputAmountTo.setAttribute('max', `${this.amountMax}`);
+    inputAmountTo.value = `${this.amountMax}`;
     amountControl.appendChild(inputAmountFrom);
     amountControl.appendChild(inputAmountTo);
-    const amountControlValue = this.createElement('', 'div', 'amount__control_value');
+    const amountControlValue = this.createElement('', 'div', 'amount__control_value') as HTMLInputElement;
     amountControl.appendChild(amountControlValue);
-    const amountControlValueFrom = this.createElement('0', 'div', 'amount__control_from-value');
-    const amountControlValueTo = this.createElement('100', 'div', 'amount__control_to-value');
+    const amountControlValueFrom = this.createElement(`${this.amountMin}`, 'div', 'amount__control_from-value');
+    const amountControlValueTo = this.createElement(`${this.amountMax}`, 'div', 'amount__control_to-value');
     amountControlValue.appendChild(amountControlValueFrom);
     amountControlValue.appendChild(amountControlValueTo);
+
+    inputAmountFrom.addEventListener('input', () => {
+      if (parseInt(inputAmountTo.value) - parseInt(inputAmountFrom.value) <= minGap) {
+        inputAmountFrom.value = (parseInt(inputAmountTo.value) - minGap).toString();
+      }
+      amountControlValueFrom.textContent = inputAmountFrom.value;
+      filter.stock.min = Number(inputAmountFrom.value);
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    });
+
+    inputAmountTo.addEventListener('input', () => {
+      if (parseInt(inputAmountTo.value) - parseInt(inputAmountFrom.value) <= minGap) {
+        inputAmountTo.value = (parseInt(inputAmountFrom.value) + minGap).toString();
+      }
+      if (parseInt(inputAmountTo.value) <= this.amountMin) {
+        inputAmountTo.style.zIndex = '2';
+      } else {
+        inputAmountTo.style.zIndex = '0';
+      }
+      amountControlValueTo.textContent = inputAmountTo.value;
+      filter.stock.max = Number(inputAmountTo.value);
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    });
 
     const sortContainer = this.createElement('', 'div', 'sort__container');
     this.container.appendChild(sortContainer);
@@ -248,18 +322,29 @@ class MainPage extends Page {
       sortSelect.appendChild(sortOption);
     }
 
-    const sortSearch = this.createElement('', 'input', 'sort__search');
-    sortSearch.setAttribute('type', 'search');
+    const sortSearch = this.createElement('', 'input', 'sort__search') as HTMLInputElement;
+    sortSearch.setAttribute('type', 'text');
     sortSearch.setAttribute('placeholder', 'Search');
     sortContainer.appendChild(sortSearch);
 
+    sortSearch.addEventListener('input', () => {
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    });
+
     const productContainer = this.createElement('', 'div', 'product__container');
     this.container.appendChild(productContainer);
-    this.showCards(productsList.products, productContainer);
+    this.showCards(this.copyProducts, productContainer, filterHeaderAmount);
 
     sortSelect.addEventListener('change', () => {
-      this.sortArray = sorting(this.sortArray, sortSelect.value);
-      this.showCards(this.sortArray, productContainer);
+      this.copyProducts = sorting(this.copyProducts, sortSelect.value);
+      this.tempProducts = sorting(this.tempProducts, sortSelect.value);
+      filter.category.length || filter.brand.length ? (filter.sort = false) : (filter.sort = true);
+      if (!this.tempProducts.length && filter.sort) {
+        this.showCards(this.copyProducts, productContainer, filterHeaderAmount);
+      } else {
+        this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      }
     });
 
     return this.container;

@@ -2,8 +2,7 @@ import './main.css';
 import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
 import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
-import { sorting } from '../../core/templates/sortFunctions';
-import { filter, filteredItems } from '../../core/templates/filterFunctions';
+import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
 
 class MainPage extends Page {
   copyProducts: ProductType[];
@@ -225,7 +224,7 @@ class MainPage extends Page {
         inputPriceFrom.value = (parseInt(inputPriceTo.value) - minGap).toString();
       }
       priceControlValueFrom.textContent = inputPriceFrom.value;
-      filter.price.min = Number(inputPriceFrom.value);
+      filter.price.min = +inputPriceFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
     });
@@ -234,13 +233,13 @@ class MainPage extends Page {
       if (parseInt(inputPriceTo.value) - parseInt(inputPriceFrom.value) <= minGap) {
         inputPriceTo.value = (parseInt(inputPriceFrom.value) + minGap).toString();
       }
-      if (parseInt(inputPriceTo.value) <= this.priceMin + 10) {
+      if (parseInt(inputPriceTo.value) <= this.priceMin + 12) {
         inputPriceTo.style.zIndex = '2';
       } else {
         inputPriceTo.style.zIndex = '0';
       }
       priceControlValueTo.textContent = inputPriceTo.value;
-      filter.price.max = Number(inputPriceTo.value);
+      filter.price.max = +inputPriceTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
     });
@@ -275,7 +274,7 @@ class MainPage extends Page {
         inputAmountFrom.value = (parseInt(inputAmountTo.value) - minGap).toString();
       }
       amountControlValueFrom.textContent = inputAmountFrom.value;
-      filter.stock.min = Number(inputAmountFrom.value);
+      filter.stock.min = +inputAmountFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
     });
@@ -290,7 +289,7 @@ class MainPage extends Page {
         inputAmountTo.style.zIndex = '0';
       }
       amountControlValueTo.textContent = inputAmountTo.value;
-      filter.stock.max = Number(inputAmountTo.value);
+      filter.stock.max = +inputAmountTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
     });
@@ -330,6 +329,48 @@ class MainPage extends Page {
     sortSearch.addEventListener('input', () => {
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    });
+
+    const sortReset = this.createElement('Reset filters', 'button', 'sort__reset');
+    sortContainer.appendChild(sortReset);
+
+    sortReset.addEventListener('click', () => {
+      this.showCards(productsList.products, productContainer, filterHeaderAmount);
+      this.copyProducts = JSON.parse(JSON.stringify(productsList.products));
+      this.tempProducts = [];
+      sortSelect.value = '0';
+      sortSearch.value = '';
+      inputPriceFrom.value = `${this.priceMin}`;
+      inputPriceTo.value = `${this.priceMax}`;
+      priceControlValueFrom.textContent = inputPriceFrom.value;
+      priceControlValueTo.textContent = inputPriceTo.value;
+      filter.price.min = +inputPriceFrom.value;
+      filter.price.max = +inputPriceTo.value;
+      inputAmountFrom.value = `${this.amountMin}`;
+      inputAmountTo.value = `${this.amountMax}`;
+      filter.stock.min = +inputAmountFrom.value;
+      filter.stock.max = +inputAmountTo.value;
+      amountControlValueFrom.textContent = inputAmountFrom.value;
+      amountControlValueTo.textContent = inputAmountTo.value;
+      filter.category = [];
+      filter.brand = [];
+
+      const arrCategory = this.filterProduct('category');
+      const arrBrand = this.filterProduct('brand');
+
+      for (let i = 0; i < arrCategory.length; i += 1) {
+        const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
+        if (category.checked) {
+          category.checked = false;
+        }
+      }
+
+      for (let i = 0; i < arrBrand.length; i += 1) {
+        const category = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
+        if (category.checked) {
+          category.checked = false;
+        }
+      }
     });
 
     const productContainer = this.createElement('', 'div', 'product__container');

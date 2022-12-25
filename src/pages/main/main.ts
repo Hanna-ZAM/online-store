@@ -366,9 +366,9 @@ class MainPage extends Page {
       }
 
       for (let i = 0; i < arrBrand.length; i += 1) {
-        const category = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
-        if (category.checked) {
-          category.checked = false;
+        const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
+        if (brand.checked) {
+          brand.checked = false;
         }
       }
     });

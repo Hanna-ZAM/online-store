@@ -147,6 +147,20 @@ main {
   font-weight: 700;
   font-size: 24px;
 }
+
+.button-small{
+  padding: 5px 5px;
+  background-color:rgba(255, 255, 255, 0.0);
+  border: 1.5px solid #72927A;
+  color: #72927A;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: -21px;
+  margin-bottom: 20px;
+  margin-left: 15px;
+  margin-right: 35px;
+}
+
 .button-anti{
   background-color:rgba(255, 255, 255, 0.0);
   color: #72927A;
@@ -249,6 +263,18 @@ main {
   height: 40px;
   padding: 15px;
   margin: 40px 0 20px 0;
+}
+
+.promotext{
+  font-size: 14px;
+  margin-block-start: -25px;
+}
+
+.promoitem{
+  font-size: 14px;
+  font-weight: 600;
+  margin-block-start: -16px;
+  margin-block-end: 25px;
 }
 
 .discount{

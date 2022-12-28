@@ -139,9 +139,10 @@ span {
 .sort__search::-webkit-search-results-decoration { 
   display: none;
 }
-.sort__reset {
+.sort__reset,
+.sort__copy_link {
   cursor: pointer;
-  width: 20%;
+  width: 15%;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -151,7 +152,8 @@ span {
   background-color: #FFFFFF;
   transition: all .5s ease;
 }
-.sort__reset:hover {
+.sort__reset:hover,
+.sort__copy_link:hover {
   background-color: #72927A;
 }
 .price__control,
@@ -204,7 +206,7 @@ input[type="range"] {
   align-items: center;
   flex-wrap: wrap;
   width: 100%;
-  gap: 20px 1%;
+  gap: 20px .7%;
   margin: 70px 0 0 0;
 }
 .card__container {
@@ -212,14 +214,22 @@ input[type="range"] {
   flex-direction: column;
   justify-content: flex-start;
   background-color: #FFFFFF;
-  width: 24%;
-  height: 420px;
+  width: 24.3%;
+  height: 35vh;
 }
+/* .card__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: #FFFFFF;
+  width: 16%;
+  height: 35vh;
+} */
 .card__open-card_btn {
   cursor: pointer;
   position: relative;
   width: 100%;
-  height: 277px;
+  height: 55%;
   overflow: hidden;
 }
 .card__open-card_btn:before {
@@ -253,7 +263,7 @@ input[type="range"] {
 }
 .card__add-basket_btn {
   cursor: pointer;
-  height: 50px;
+  height: 15%;
   background-color: #72927A;
   font-family: 'Montserrat';
   font-style: normal;
@@ -271,7 +281,7 @@ input[type="range"] {
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 1rem;
   line-height: 160%;
   color: #000000;
   margin: 0 0 0 10px;
@@ -280,7 +290,7 @@ input[type="range"] {
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 1em;
   line-height: 160%;
   color: #000000;
   margin: 0 0 0 10px;

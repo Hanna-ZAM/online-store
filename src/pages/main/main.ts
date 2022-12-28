@@ -137,6 +137,18 @@ class MainPage extends Page {
       elementLabel.appendChild(elementSpan);
 
       elementSpan.addEventListener('click', () => {
+        // let params = new URLSearchParams(window.location.search);
+        // params.append('category', '1111');
+        // console.log(params);
+        // console.log(window.location.search);
+
+        // window.location.search = `&category=${elementSpan.id}`
+        const url = new URL(window.location.href);
+        url.searchParams.set('category', `${elementSpan.id}`);
+        window.history.pushState('main', '', url);
+
+        console.log(window.location.search);
+
         if (!filter.category.includes(elementSpan.id)) {
           filter.category.push(elementSpan.id);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
@@ -330,6 +342,9 @@ class MainPage extends Page {
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
     });
+
+    const copyLink = this.createElement('Copy link', 'button', 'sort__copy_link');
+    sortContainer.appendChild(copyLink);
 
     const sortReset = this.createElement('Reset filters', 'button', 'sort__reset');
     sortContainer.appendChild(sortReset);

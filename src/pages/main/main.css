@@ -295,3 +295,6 @@ input[type="range"] {
   color: #000000;
   margin: 0 0 0 10px;
 }
+.copied {
+  background-color: yellow;
+}

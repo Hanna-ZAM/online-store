@@ -3,6 +3,7 @@ import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
 import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
+import { syncURL, params } from '../../core/templates/queryFunction';
 
 class MainPage extends Page {
   copyProducts: ProductType[];
@@ -73,8 +74,6 @@ class MainPage extends Page {
     btnAddBasket.addEventListener('click', () => {
       itemsInBasket.push(arr[i].id);
       uniqueItemsInBasket.add(arr[i].id);
-      console.log(itemsInBasket);
-      console.log(uniqueItemsInBasket);
     });
 
     return cardContainer;
@@ -137,25 +136,17 @@ class MainPage extends Page {
       elementLabel.appendChild(elementSpan);
 
       elementSpan.addEventListener('click', () => {
-        // let params = new URLSearchParams(window.location.search);
-        // params.append('category', '1111');
-        // console.log(params);
-        // console.log(window.location.search);
-
-        // window.location.search = `&category=${elementSpan.id}`
-        const url = new URL(window.location.href);
-        url.searchParams.set('category', `${elementSpan.id}`);
-        window.history.pushState('main', '', url);
-
-        console.log(window.location.search);
-
         if (!filter.category.includes(elementSpan.id)) {
           filter.category.push(elementSpan.id);
+          params.category = `${filter.category.join(',')}`;
+          syncURL(params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         } else {
           const index = filter.category.indexOf(elementSpan.id);
           filter.category.splice(index, 1);
+          params.category = `${filter.category.join(',')}`;
+          syncURL(params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         }
@@ -187,11 +178,15 @@ class MainPage extends Page {
       elementSpan.addEventListener('click', () => {
         if (!filter.brand.includes(elementSpan.id)) {
           filter.brand.push(elementSpan.id);
+          params.brand = `${filter.brand.join(',')}`;
+          syncURL(params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         } else {
           const index = filter.brand.indexOf(elementSpan.id);
           filter.brand.splice(index, 1);
+          params.brand = `${filter.brand.join(',')}`;
+          syncURL(params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         }
@@ -239,6 +234,8 @@ class MainPage extends Page {
       filter.price.min = +inputPriceFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      params.priceFrom = `${inputPriceFrom.value}`;
+      syncURL(params);
     });
 
     inputPriceTo.addEventListener('input', () => {
@@ -254,6 +251,8 @@ class MainPage extends Page {
       filter.price.max = +inputPriceTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      params.priceTo = `${inputPriceTo.value}`;
+      syncURL(params);
     });
 
     this.filterProduct('stock');
@@ -289,6 +288,8 @@ class MainPage extends Page {
       filter.stock.min = +inputAmountFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      params.stockFrom = `${inputAmountFrom.value}`;
+      syncURL(params);
     });
 
     inputAmountTo.addEventListener('input', () => {
@@ -304,6 +305,8 @@ class MainPage extends Page {
       filter.stock.max = +inputAmountTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      params.stockTo = `${inputAmountTo.value}`;
+      syncURL(params);
     });
 
     const sortContainer = this.createElement('', 'div', 'sort__container');
@@ -341,15 +344,36 @@ class MainPage extends Page {
     sortSearch.addEventListener('input', () => {
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      params.search = sortSearch.value;
+      syncURL(params);
     });
 
     const copyLink = this.createElement('Copy link', 'button', 'sort__copy_link');
     sortContainer.appendChild(copyLink);
 
+    copyLink.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href);
+      copyLink.classList.add('copied');
+      copyLink.innerText = 'Copied';
+      setTimeout(() => {
+        copyLink.classList.remove('copied');
+        copyLink.innerText = 'Copy link';
+      }, 1500);
+    });
+
     const sortReset = this.createElement('Reset filters', 'button', 'sort__reset');
     sortContainer.appendChild(sortReset);
 
     sortReset.addEventListener('click', () => {
+      params.brand = '';
+      params.category = '';
+      params.priceFrom = '';
+      params.priceTo = '';
+      params.search = '';
+      params.sort = '';
+      params.stockFrom = '';
+      params.stockTo = '';
+      syncURL(params);
       this.showCards(productsList.products, productContainer, filterHeaderAmount);
       this.copyProducts = JSON.parse(JSON.stringify(productsList.products));
       this.tempProducts = [];
@@ -393,6 +417,8 @@ class MainPage extends Page {
     this.showCards(this.copyProducts, productContainer, filterHeaderAmount);
 
     sortSelect.addEventListener('change', () => {
+      params.sort = sortSelect.value;
+      syncURL(params);
       this.copyProducts = sorting(this.copyProducts, sortSelect.value);
       this.tempProducts = sorting(this.tempProducts, sortSelect.value);
       filter.category.length || filter.brand.length ? (filter.sort = false) : (filter.sort = true);

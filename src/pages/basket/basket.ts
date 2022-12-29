@@ -12,7 +12,7 @@ export const enum Promo {
 const discountArr: Array<number> = [];
 class BasketPage extends Page {
   static TextObject = {
-    MainTitle: 'Basket',
+    MainTitle: 'Cart',
   };
 
   constructor(id: string) {

@@ -7,9 +7,9 @@ import productsList from '../../core/templates/product';
 import { createUniqueItemsInBasket } from '../../core/templates/function';
 
 export const enum PageIds {
-  MainPage = 'main-page',
-  GoodsPage = 'goods-page',
-  BasketPage = 'basket-page',
+  MainPage = 'main',
+  GoodsPage = 'goods',
+  BasketPage = 'cart',
 }
 
 export const itemsInBasket: Array<number> = [1, 4, 2, 3, 1, 4, 5, 3]; //- здесь будут Id товаров, которые добавлены в корзину
@@ -46,7 +46,6 @@ class App {
   private enableRouteChange() {
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash.slice(1);
-      console.log(hash);
       App.renderNewPage(hash);
     });
   }
@@ -55,7 +54,7 @@ class App {
     console.log(itemsInBasket);
 
     this.enableRouteChange();
-    App.renderNewPage('main-page');
+    App.renderNewPage('main');
     uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
     countItemInBasket!.innerHTML = itemsInBasket.length.toString();
     console.log(countItemInBasket!.innerHTML);

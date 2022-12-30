@@ -3,7 +3,9 @@ import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
 import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
-import { syncURL, params } from '../../core/templates/queryFunction';
+import { syncURL, Query, transformToURLParams, filterParam } from '../../core/templates/queryFunction';
+
+type T = keyof Query;
 
 class MainPage extends Page {
   copyProducts: ProductType[];
@@ -12,6 +14,7 @@ class MainPage extends Page {
   priceMin: number;
   amountMax: number;
   amountMin: number;
+  params: Query;
   static TextObject = {
     MainTitle: 'Catalog',
   };
@@ -24,6 +27,7 @@ class MainPage extends Page {
     this.priceMin = 0;
     this.amountMax = 0;
     this.amountMin = 0;
+    this.params = {};
   }
 
   filterProduct(key: string): string[] {
@@ -138,15 +142,15 @@ class MainPage extends Page {
       elementSpan.addEventListener('click', () => {
         if (!filter.category.includes(elementSpan.id)) {
           filter.category.push(elementSpan.id);
-          params.category = `${filter.category.join(',')}`;
-          syncURL(params);
+          this.params.category = `${filter.category.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         } else {
           const index = filter.category.indexOf(elementSpan.id);
           filter.category.splice(index, 1);
-          params.category = `${filter.category.join(',')}`;
-          syncURL(params);
+          this.params.category = `${filter.category.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         }
@@ -178,15 +182,15 @@ class MainPage extends Page {
       elementSpan.addEventListener('click', () => {
         if (!filter.brand.includes(elementSpan.id)) {
           filter.brand.push(elementSpan.id);
-          params.brand = `${filter.brand.join(',')}`;
-          syncURL(params);
+          this.params.brand = `${filter.brand.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         } else {
           const index = filter.brand.indexOf(elementSpan.id);
           filter.brand.splice(index, 1);
-          params.brand = `${filter.brand.join(',')}`;
-          syncURL(params);
+          this.params.brand = `${filter.brand.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         }
@@ -234,8 +238,8 @@ class MainPage extends Page {
       filter.price.min = +inputPriceFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-      params.priceFrom = `${inputPriceFrom.value}`;
-      syncURL(params);
+      this.params.priceFrom = `${inputPriceFrom.value}`;
+      syncURL(this.params);
     });
 
     inputPriceTo.addEventListener('input', () => {
@@ -251,8 +255,8 @@ class MainPage extends Page {
       filter.price.max = +inputPriceTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-      params.priceTo = `${inputPriceTo.value}`;
-      syncURL(params);
+      this.params.priceTo = `${inputPriceTo.value}`;
+      syncURL(this.params);
     });
 
     this.filterProduct('stock');
@@ -288,8 +292,8 @@ class MainPage extends Page {
       filter.stock.min = +inputAmountFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-      params.stockFrom = `${inputAmountFrom.value}`;
-      syncURL(params);
+      this.params.stockFrom = `${inputAmountFrom.value}`;
+      syncURL(this.params);
     });
 
     inputAmountTo.addEventListener('input', () => {
@@ -305,8 +309,8 @@ class MainPage extends Page {
       filter.stock.max = +inputAmountTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-      params.stockTo = `${inputAmountTo.value}`;
-      syncURL(params);
+      this.params.stockTo = `${inputAmountTo.value}`;
+      syncURL(this.params);
     });
 
     const sortContainer = this.createElement('', 'div', 'sort__container');
@@ -344,8 +348,8 @@ class MainPage extends Page {
     sortSearch.addEventListener('input', () => {
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-      params.search = sortSearch.value;
-      syncURL(params);
+      this.params.search = sortSearch.value;
+      syncURL(this.params);
     });
 
     const copyLink = this.createElement('Copy link', 'button', 'sort__copy_link');
@@ -365,15 +369,10 @@ class MainPage extends Page {
     sortContainer.appendChild(sortReset);
 
     sortReset.addEventListener('click', () => {
-      params.brand = '';
-      params.category = '';
-      params.priceFrom = '';
-      params.priceTo = '';
-      params.search = '';
-      params.sort = '';
-      params.stockFrom = '';
-      params.stockTo = '';
-      syncURL(params);
+      for(let key in this.params) {
+        this.params[key as T] = '';
+      }
+      syncURL(this.params);
       this.showCards(productsList.products, productContainer, filterHeaderAmount);
       this.copyProducts = JSON.parse(JSON.stringify(productsList.products));
       this.tempProducts = [];
@@ -393,9 +392,6 @@ class MainPage extends Page {
       amountControlValueTo.textContent = inputAmountTo.value;
       filter.category = [];
       filter.brand = [];
-
-      const arrCategory = this.filterProduct('category');
-      const arrBrand = this.filterProduct('brand');
 
       for (let i = 0; i < arrCategory.length; i += 1) {
         const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
@@ -417,8 +413,8 @@ class MainPage extends Page {
     this.showCards(this.copyProducts, productContainer, filterHeaderAmount);
 
     sortSelect.addEventListener('change', () => {
-      params.sort = sortSelect.value;
-      syncURL(params);
+      this.params.sort = sortSelect.value;
+      syncURL(this.params);
       this.copyProducts = sorting(this.copyProducts, sortSelect.value);
       this.tempProducts = sorting(this.tempProducts, sortSelect.value);
       filter.category.length || filter.brand.length ? (filter.sort = false) : (filter.sort = true);
@@ -429,6 +425,60 @@ class MainPage extends Page {
       }
     });
 
+    if(window.location.search.length) {
+      this.params = transformToURLParams();
+      const filterURL = filterParam(this.params);
+
+      console.log(this.params);
+      console.log(filterURL);
+
+      filter.brand = filterURL.brand;
+      filter.category = filterURL.category;
+      filter.price.min = filterURL.price.min;
+      filter.price.max = filterURL.price.max;
+      filter.stock.min = filterURL.stock.min;
+      filter.stock.max = filterURL.stock.max;
+
+      if(filter.category.length) {
+        for (let i = 0; i < arrCategory.length; i += 1) {
+          const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
+          if (filter.category.includes(arrCategory[i])) {
+            category.checked = true;
+          }
+        }
+      }
+
+      if(filter.brand.length) {
+        for (let i = 0; i < arrBrand.length; i += 1) {
+          const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
+          if (filter.brand.includes(arrBrand[i])) {
+            brand.checked = true;
+          }
+        }
+      }
+
+      if(this.params.sort?.length) {
+        sortSelect.value = this.params.sort;
+        this.copyProducts = sorting(this.copyProducts, sortSelect.value);
+      }
+
+      if(this.params.search?.length) {
+        sortSearch.value = this.params.search;
+      }
+
+      inputPriceFrom.value = `${filter.price.min}`;
+      inputPriceTo.value = `${filter.price.max}`;
+      priceControlValueFrom.textContent = inputPriceFrom.value;
+      priceControlValueTo.textContent = inputPriceTo.value;
+      inputAmountFrom.value = `${filter.stock.min}`;
+      inputAmountTo.value = `${filter.stock.max}`
+      amountControlValueFrom.textContent = inputAmountFrom.value;
+      amountControlValueTo.textContent = inputAmountTo.value;
+
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      
+    }
     return this.container;
   }
 }

@@ -1,4 +1,4 @@
-import { filter } from "./filterFunctions";
+import { filter } from './filterFunctions';
 
 export type Query = {
   category?: string;
@@ -9,26 +9,25 @@ export type Query = {
   stockTo?: string;
   search?: string;
   sort?: string;
+  view?: string;
 };
 
 type T = keyof Query;
 
 export function syncURL(query: Query) {
-
   const baseURL = window.location.href;
   const url = new URL(baseURL);
   const params = new URLSearchParams(query);
 
-  for(let key in query) {
-    if(!query[key as T]?.length) {
-      params.delete(`${key}`)
+  for (const key in query) {
+    if (!query[key as T]?.length) {
+      params.delete(`${key}`);
     }
   }
 
   url.search = params.toString();
-  window.history.pushState(query, '', url);
+  history.pushState(query, '', url);
 }
-
 
 export function transformToURLParams() {
   const queryString = window.location.search;
@@ -39,31 +38,30 @@ export function transformToURLParams() {
   for (let i = 0; i < params.length; i += 1) {
     const param: string[] = params[i].split('=');
     if (param.length === 2) {
-      query[param[0] as T] = `${param[1].replace(/\+/g, " ").split('%2C')}`;
+      query[param[0] as T] = `${param[1].replace(/\+/g, ' ').split('%2C')}`;
     }
   }
-  
+
   return query;
 }
 
 export function filterParam(obj: Query) {
-
-  if(obj.category?.length) {
+  if (obj.category?.length) {
     filter.category = obj.category?.split(',');
   }
-  if(obj.brand?.length) {
+  if (obj.brand?.length) {
     filter.brand = obj.brand?.split(',');
   }
-  if(obj.priceFrom?.length) {
+  if (obj.priceFrom?.length) {
     filter.price.min = +obj.priceFrom;
   }
-  if(obj.priceTo?.length) {
+  if (obj.priceTo?.length) {
     filter.price.max = +obj.priceTo;
   }
-  if(obj.stockFrom?.length) {
+  if (obj.stockFrom?.length) {
     filter.stock.min = +obj.stockFrom;
   }
-  if(obj.stockTo?.length) {
+  if (obj.stockTo?.length) {
     filter.stock.max = +obj.stockTo;
   }
 

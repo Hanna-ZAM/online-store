@@ -41,28 +41,40 @@ export function transformToURLParams() {
       query[param[0] as T] = `${param[1].replace(/\+/g, ' ').split('%2C')}`;
     }
   }
-
   return query;
 }
 
 export function filterParam(obj: Query) {
-  if (obj.category?.length) {
-    filter.category = obj.category?.split(',');
-  }
-  if (obj.brand?.length) {
+  obj.category ? (filter.category = obj.category?.split(',')) : (filter.category = []);
+  // if (obj.category) {
+  //   filter.category = obj.category?.split(',');
+  // } else {
+  //   filter.category = [];
+  // }
+  if (obj.brand) {
     filter.brand = obj.brand?.split(',');
+  } else {
+    filter.brand = [];
   }
-  if (obj.priceFrom?.length) {
+  if (obj.priceFrom) {
     filter.price.min = +obj.priceFrom;
+  } else {
+    filter.price.min = 10;
   }
-  if (obj.priceTo?.length) {
+  if (obj.priceTo) {
     filter.price.max = +obj.priceTo;
+  } else {
+    filter.price.max = 1749;
   }
-  if (obj.stockFrom?.length) {
+  if (obj.stockFrom) {
     filter.stock.min = +obj.stockFrom;
+  } else {
+    filter.stock.min = 2;
   }
-  if (obj.stockTo?.length) {
+  if (obj.stockTo) {
     filter.stock.max = +obj.stockTo;
+  } else {
+    filter.stock.max = 150;
   }
 
   return filter;

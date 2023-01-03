@@ -125,14 +125,14 @@ class BasketPage extends Page {
       const btnPlus = item.children[1].children[3].children[0].children[2];
       const btnDel = item.children[0];
       console.log(btnDel);
-      btnDel.addEventListener('click', (e) => {
+      btnDel.addEventListener('click', () => {
         console.log(btnDel);
         uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
         console.log(uniqueItemsInBasket);
         this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
       });
 
-      btnMinus.addEventListener('click', (e) => {
+      btnMinus.addEventListener('click', () => {
         if (item.children[1].children[3].children[0].children[1].innerHTML === '1') {
           console.log('deee' + item.id);
           uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
@@ -142,7 +142,7 @@ class BasketPage extends Page {
         }
       });
 
-      btnPlus.addEventListener('click', (e) => {
+      btnPlus.addEventListener('click', () => {
         changeQuantity(item, 'up');
       });
     }
@@ -158,14 +158,14 @@ class BasketPage extends Page {
     const itemsPerPage = this.createElement('Item per page: ', 'input', 'items-per-page');
     itemsPerPage.setAttribute('value', '3');
     itemsPerPage.setAttribute('type', 'number');
-    itemsPerPage.addEventListener('input', (e) => {
+    itemsPerPage.addEventListener('input', () => {
       this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
     });
     let pageNum = 1;
     const pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
     const flexContainer3 = this.createElement('', 'div', 'flex-container');
     const arrowMinus = this.createElement(`<`, 'span', 'square');
-    arrowMinus.addEventListener('click', (e) => {
+    arrowMinus.addEventListener('click', () => {
       if (pageNum > 1) {
         pageNum--;
         this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
@@ -173,7 +173,7 @@ class BasketPage extends Page {
     });
     const countPage = this.createElement(` Page ${pageNum} from ${pageCount} `, 'p', 'p');
     const arrowPlus = this.createElement(`>`, 'span', 'square');
-    arrowPlus.addEventListener('click', (e) => {
+    arrowPlus.addEventListener('click', () => {
       if (pageNum < Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value))) {
         pageNum++;
         this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
@@ -200,7 +200,7 @@ class BasketPage extends Page {
         const btnPlus = item.children[1].children[3].children[0].children[2];
         const btnDel = item.children[0];
 
-        btnMinus.addEventListener('click', (e) => {
+        btnMinus.addEventListener('click', () => {
           const count = item.children[1].children[3].children[0].children[1].innerHTML;
           const id = Number(item.id);
           console.log(i);
@@ -220,7 +220,7 @@ class BasketPage extends Page {
           }
         });
 
-        btnPlus.addEventListener('click', (e) => {
+        btnPlus.addEventListener('click', () => {
           const count = item.children[1].children[3].children[0].children[1].innerHTML;
           const id = Number(item.id);
           const price = productsList.products[id - 1].price;
@@ -235,7 +235,7 @@ class BasketPage extends Page {
             console.log(itemsInBasket);
           }
         });
-        btnDel.addEventListener('click', (e) => {
+        btnDel.addEventListener('click', () => {
           console.log(btnDel);
           uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
           console.log(uniqueItemsInBasket);
@@ -268,24 +268,24 @@ class BasketPage extends Page {
 
     const discount = this.createElement('Discount: 0', 'p', 'discount');
     const totalWithoutDiscont = this.createElement(
-      `Total price: ${sumItemInBasket!.innerHTML}`,
+      `Total price: ${sumItemInBasket.innerHTML}`,
       'p',
       'basket-item__price'
     );
     totalWithoutDiscont.classList.add('no-visible');
-    const total = this.createElement(`Total price: ${sumItemInBasket!.innerHTML}`, 'p', 'total');
-    document.addEventListener('click', (e) => {
+    const total = this.createElement(`Total price: ${sumItemInBasket.innerHTML}`, 'p', 'total');
+    document.addEventListener('click', () => {
       if (promoDiscount === 0) {
-        total.innerHTML = `Total price: ${sumItemInBasket!.innerHTML}`;
+        total.innerHTML = `Total price: ${sumItemInBasket.innerHTML}`;
       } else {
-        totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket!.innerHTML}`;
+        totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket.innerHTML}`;
         total.innerHTML = `Total price: ${Math.ceil(
-          (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - Number(promoDiscount))) / 100
+          (Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - Number(promoDiscount))) / 100
         ).toString()} $`;
       }
     });
 
-    promocode.addEventListener('input', (e) => {
+    promocode.addEventListener('input', () => {
       let d = 0;
       if (discountArr.length < 2) {
         if ((promocode as HTMLInputElement).value === 'promo10') {
@@ -300,14 +300,14 @@ class BasketPage extends Page {
           promoText.innerHTML = `promo${d}, discount ${d}%`;
           const promoBtnAdd = this.createElement(`add`, 'button', 'button-small');
           promoText.appendChild(promoBtnAdd);
-          promoBtnAdd.addEventListener('click', (e) => {
+          promoBtnAdd.addEventListener('click', () => {
             discountArr.push(d);
             promoDiscount = discountArr.reduce((sum: number, cur: number) => sum + cur, 0);
             totalWithoutDiscont.classList.remove('no-visible');
             console.log('promoDiscount' + promoDiscount);
-            totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket!.innerHTML}`;
+            totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket.innerHTML}`;
             total.innerHTML = `Total price: ${Math.ceil(
-              (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
+              (Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
             ).toString()} $`;
             const promoItem = this.createElement(`promo${d} is used, discount ${d}%`, 'p', 'promoitem');
             promoContainer.appendChild(promoItem);

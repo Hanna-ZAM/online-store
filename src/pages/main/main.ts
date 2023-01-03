@@ -82,8 +82,8 @@ class MainPage extends Page {
         btnAddBasket.innerText = 'in cart';
         itemsInBasket.push(arr[i].id);
         uniqueItemsInBasket.add(arr[i].id);
-        countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
-        sumItemInBasket!.innerHTML = `${itemsInBasket
+        countItemInBasket.innerText = `${itemsInBasket.length}`;
+        sumItemInBasket.innerText = `${itemsInBasket
           .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
           .toString()} $`;
       } else {
@@ -99,8 +99,8 @@ class MainPage extends Page {
           itemsInBasket.splice(indexArr[i], 1);
         }
         uniqueItemsInBasket.delete(arr[i].id);
-        countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
-        sumItemInBasket!.innerHTML = `${itemsInBasket
+        countItemInBasket.innerText = `${itemsInBasket.length}`;
+        sumItemInBasket.innerText = `${itemsInBasket
           .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
           .toString()} $`;
       }
@@ -481,63 +481,61 @@ class MainPage extends Page {
       }
     });
 
-    // window.addEventListener('popstate', () => {
-    //   this.params = transformToURLParams();
-    //   const filterURL = filterParam(this.params);
+    window.addEventListener('popstate', () => {
+      this.params = transformToURLParams();
+      const filterURL = filterParam(this.params);
 
-    //   filter.brand = filterURL.brand;
-    //   filter.category = filterURL.category;
-    //   filter.price.min = filterURL.price.min;
-    //   filter.price.max = filterURL.price.max;
-    //   filter.stock.min = filterURL.stock.min;
-    //   filter.stock.max = filterURL.stock.max;
+      filter.brand = filterURL.brand;
+      filter.category = filterURL.category;
+      filter.price.min = filterURL.price.min;
+      filter.price.max = filterURL.price.max;
+      filter.stock.min = filterURL.stock.min;
+      filter.stock.max = filterURL.stock.max;
 
-    //   for (let i = 0; i < arrCategory.length; i += 1) {
-    //     const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
-    //     if (filter.category.includes(arrCategory[i]) && !category.checked) {
-    //       category.checked = true;
-    //     } else if (!filter.category.includes(arrCategory[i]) && category.checked) {
-    //       category.checked = false;
-    //     } else if (!filter.category.includes(arrCategory[i])) {
-    //       category.checked = false;
-    //     }
-    //   }
+      for (let i = 0; i < arrCategory.length; i += 1) {
+        const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
 
-    //   for (let i = 0; i < arrBrand.length; i += 1) {
-    //     const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
-    //     if (filter.brand.includes(arrBrand[i]) && !brand.checked) {
-    //       brand.checked = true;
-    //     } else if (!filter.brand.includes(arrBrand[i]) && brand.checked) {
-    //       brand.checked = false;
-    //     }
+        if (filter.category.includes(arrCategory[i])) {
+          category.checked = true;
+        } else {
+          category.checked = false;
+        }
+      }
 
-    //   }
+      for (let i = 0; i < arrBrand.length; i += 1) {
+        const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
+        if (filter.brand.includes(arrBrand[i])) {
+          brand.checked = true;
+        } else {
+          brand.checked = false;
+        }
+      }
 
-    //   if(this.params.sort?.length) {
-    //     sortSelect.value = this.params.sort;
-    //     this.copyProducts = sorting(this.copyProducts, sortSelect.value);
-    //   } else {
-    //     sortSelect.value = '0';
-    //   }
+      if (this.params.sort) {
+        sortSelect.value = this.params.sort;
+        this.copyProducts = sorting(this.copyProducts, sortSelect.value);
+      } else {
+        sortSelect.value = '0';
+      }
 
-    //   if(this.params.search?.length) {
-    //     sortSearch.value = this.params.search;
-    //   } else {
-    //     sortSearch.value = '';
-    //   }
+      if (this.params.search?.length) {
+        sortSearch.value = this.params.search;
+      } else {
+        sortSearch.value = '';
+      }
 
-    //   inputPriceFrom.value = `${filter.price.min}`;
-    //   inputPriceTo.value = `${filter.price.max}`;
-    //   priceControlValueFrom.textContent = inputPriceFrom.value;
-    //   priceControlValueTo.textContent = inputPriceTo.value;
-    //   inputAmountFrom.value = `${filter.stock.min}`;
-    //   inputAmountTo.value = `${filter.stock.max}`
-    //   amountControlValueFrom.textContent = inputAmountFrom.value;
-    //   amountControlValueTo.textContent = inputAmountTo.value;
+      inputPriceFrom.value = `${filter.price.min}`;
+      inputPriceTo.value = `${filter.price.max}`;
+      priceControlValueFrom.textContent = inputPriceFrom.value;
+      priceControlValueTo.textContent = inputPriceTo.value;
+      inputAmountFrom.value = `${filter.stock.min}`;
+      inputAmountTo.value = `${filter.stock.max}`;
+      amountControlValueFrom.textContent = inputAmountFrom.value;
+      amountControlValueTo.textContent = inputAmountTo.value;
 
-    //   this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
-    //   this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-    // })
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    });
 
     if (window.location.search.length) {
       this.params = transformToURLParams();

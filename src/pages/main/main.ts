@@ -516,12 +516,19 @@ class MainPage extends Page {
         this.copyProducts = sorting(this.copyProducts, sortSelect.value);
       } else {
         sortSelect.value = '0';
+        this.copyProducts = sorting(this.copyProducts, sortSelect.value);
       }
 
-      if (this.params.search?.length) {
+      if (this.params.search) {
         sortSearch.value = this.params.search;
       } else {
         sortSearch.value = '';
+      }
+
+      if (this.params.view === 'small') {
+        productContainer.classList.add('change_view');
+      } else {
+        productContainer.classList.remove('change_view');
       }
 
       inputPriceFrom.value = `${filter.price.min}`;
@@ -537,7 +544,7 @@ class MainPage extends Page {
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
     });
 
-    if (window.location.search.length) {
+    if (window.location.search) {
       this.params = transformToURLParams();
       const filterURL = filterParam(this.params);
 
@@ -548,7 +555,7 @@ class MainPage extends Page {
       filter.stock.min = filterURL.stock.min;
       filter.stock.max = filterURL.stock.max;
 
-      if (filter.category.length) {
+      if (filter.category) {
         for (let i = 0; i < arrCategory.length; i += 1) {
           const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
           if (filter.category.includes(arrCategory[i])) {
@@ -557,7 +564,7 @@ class MainPage extends Page {
         }
       }
 
-      if (filter.brand.length) {
+      if (filter.brand) {
         for (let i = 0; i < arrBrand.length; i += 1) {
           const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
           if (filter.brand.includes(arrBrand[i])) {
@@ -566,12 +573,12 @@ class MainPage extends Page {
         }
       }
 
-      if (this.params.sort?.length) {
+      if (this.params.sort) {
         sortSelect.value = this.params.sort;
         this.copyProducts = sorting(this.copyProducts, sortSelect.value);
       }
 
-      if (this.params.search?.length) {
+      if (this.params.search) {
         sortSearch.value = this.params.search;
       }
 

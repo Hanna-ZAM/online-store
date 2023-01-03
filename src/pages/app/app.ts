@@ -13,14 +13,16 @@ export const enum PageIds {
 }
 
 export const itemsInBasket: Array<number> = [1, 4, 2, 3, 1, 4, 5, 3]; //- здесь будут Id товаров, которые добавлены в корзину
-export let uniqueItemsInBasket = new Set<number>(); //- здесь будут Id товаров, которые добавлены в корзину
+export let uniqueItemsInBasket = new Set<number>([...itemsInBasket]); //- здесь будут Id товаров, которые добавлены в корзину
 
 export const countItemInBasket = document.querySelector('.item__text-count') as HTMLElement;
 export const sumItemInBasket = document.querySelector('.item__text-sum') as HTMLElement;
+sumItemInBasket.innerHTML = `${itemsInBasket
+  .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
+  .toString()} $`;
 
-// const linkToCart = document.querySelector('#link_to_cart');
-// const linkToMain = document.querySelector('#link_to_main');
-/*sumItemInBasket!.innerHTML=`${itemsInBasket.reduce((acc:number, el:number):number => (acc + productsList.products[el-1].price), 0).toString()} $`;*/
+const linkToCart = document.querySelector('#link_to_cart');
+const linkToMain = document.querySelector('#link_to_main');
 
 class App {
   private static container = document.getElementById('root') as HTMLElement;
@@ -40,53 +42,31 @@ class App {
     }
 
     if (page) {
-      window.location.hash = `#${idPage}`;
       const pageHTML = page.render();
       App.container.append(pageHTML);
     }
   }
 
-  private enableRouteChange() {
-    window.addEventListener('hashchange', () => {
-      const hash = window.location.hash.slice(1);
-      App.renderNewPage(hash);
-    });
+  private getCurrentRoute() {
+    return window.location.pathname.split('/').filter(Boolean)[0];
   }
 
-  // private getCurrentRoute() {
-  //   return window.location.pathname.split('/').filter(Boolean)[0];
-  // }
-
-  // private changeRoute(route: string) {
-  //   // history.pushState({}, '', `/${route}`);
-  //   syncURL({}, route);
-  //   App.renderNewPage(route);
-  // }
+  private changeRoute(route: string) {
+    history.pushState({}, '', `/${route}`);
+    App.renderNewPage(route);
+  }
 
   run() {
-    console.log(itemsInBasket);
-
-    // window.addEventListener('popstate', () => {
-    //   this.changeRoute(this.getCurrentRoute());
-    // });
-
-    // if (window.location.pathname === '/') {
-    //   // history.pushState({}, '', `/main`);
-    //   syncURL({});
-    // }
-
-    // linkToCart?.addEventListener('click', () => {
-    //   this.changeRoute('cart');
-    // });
-    // linkToMain?.addEventListener('click', () => {
-    //   this.changeRoute('main');
-    // });
-
-    this.enableRouteChange();
-    App.renderNewPage('main');
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 1);
+    if (window.location.pathname === '/') {
+      history.pushState({}, '', `/main`);
+    }
+    linkToCart?.addEventListener('click', () => {
+      this.changeRoute('cart');
+    });
+    linkToMain?.addEventListener('click', () => {
+      this.changeRoute('main');
+    });
+    App.renderNewPage(this.getCurrentRoute());
     uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
     countItemInBasket.innerHTML = itemsInBasket.length.toString();
     console.log(countItemInBasket.innerHTML);

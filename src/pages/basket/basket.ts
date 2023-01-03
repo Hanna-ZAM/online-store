@@ -1,7 +1,6 @@
 import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
 import { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
-
 import { changeBasket, changeQuantity, deleteItemFromBasket } from '../../core/templates/function';
 
 export const enum Promo {

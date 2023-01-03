@@ -24,7 +24,6 @@ export function syncURL(query: Query) {
       params.delete(`${key}`);
     }
   }
-
   url.search = params.toString();
   history.pushState(query, '', url);
 }
@@ -46,36 +45,11 @@ export function transformToURLParams() {
 
 export function filterParam(obj: Query) {
   obj.category ? (filter.category = obj.category?.split(',')) : (filter.category = []);
-  // if (obj.category) {
-  //   filter.category = obj.category?.split(',');
-  // } else {
-  //   filter.category = [];
-  // }
-  if (obj.brand) {
-    filter.brand = obj.brand?.split(',');
-  } else {
-    filter.brand = [];
-  }
-  if (obj.priceFrom) {
-    filter.price.min = +obj.priceFrom;
-  } else {
-    filter.price.min = 10;
-  }
-  if (obj.priceTo) {
-    filter.price.max = +obj.priceTo;
-  } else {
-    filter.price.max = 1749;
-  }
-  if (obj.stockFrom) {
-    filter.stock.min = +obj.stockFrom;
-  } else {
-    filter.stock.min = 2;
-  }
-  if (obj.stockTo) {
-    filter.stock.max = +obj.stockTo;
-  } else {
-    filter.stock.max = 150;
-  }
+  obj.brand ? (filter.brand = obj.brand?.split(',')) : (filter.brand = []);
+  obj.priceFrom ? (filter.price.min = +obj.priceFrom) : (filter.price.min = 10);
+  obj.priceTo ? (filter.price.max = +obj.priceTo) : (filter.price.max = 1749);
+  obj.stockFrom ? (filter.stock.min = +obj.stockFrom) : (filter.stock.min = 2);
+  obj.stockTo ? (filter.stock.max = +obj.stockTo) : (filter.stock.max = 150);
 
   return filter;
 }

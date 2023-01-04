@@ -1,4 +1,4 @@
-import { itemsInBasket, countItemInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
+import { itemsInBasket, countItemInBasket, sumItemInBasket, uniqueItemsInBasket} from '../../pages/app/app';
 import productsList from '../../core/templates/product';
 
 export function changeBasket(Id: number, add = true): Array<number> {
@@ -58,3 +58,41 @@ export function deleteItemFromBasket(id: number, arr: Array<number>): Set<number
   }
   return result;
 }
+
+export function checkCorrectInput(
+  input: HTMLInputElement,
+  lengthString: number,
+  lengthWord: number,
+  start?: string
+): boolean {
+  const inputValue = input.value.split(' ');
+  let correct =
+    inputValue.length > lengthString - 1 &&
+    inputValue.length === inputValue.filter((el) => el.length > lengthWord - 1).length;
+  if (start) {
+    const startInput = input.value[0];
+    correct = correct && startInput === start && inputValue.length === lengthString;
+  }
+  return correct;
+}
+
+export function confirm(arr:Array<boolean>, element:HTMLElement) {
+
+  console.log(arr)
+  let arr1=arr.filter(el=> el===true);
+  if (arr.length = arr1.length) {
+    const thanks=document.createElement('div');
+    thanks.innerHTML = 'Congratulations, your order has been placed.';
+    thanks.classList.add('modal-window');
+    thanks.classList.add('thanks-window');
+    element.replaceWith(thanks);
+      let timeReload: ReturnType<typeof setTimeout>;
+      timeReload = setTimeout(function(){
+        window.location.href = '';
+        console.log('111111111')
+      }, 5000);
+    return element;
+  }
+}
+
+

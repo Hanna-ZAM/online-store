@@ -57,6 +57,9 @@ class App {
   }
 
   run() {
+    window.addEventListener('popstate', () => {
+      App.renderNewPage(this.getCurrentRoute());
+    });
     if (window.location.pathname === '/') {
       history.pushState({}, '', `/main`);
     }

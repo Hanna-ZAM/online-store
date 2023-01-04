@@ -130,6 +130,15 @@ class MainPage extends Page {
   }
 
   render() {
+    this.params = transformToURLParams();
+    const filterURL = filterParam(this.params);
+    filter.brand = filterURL.brand;
+    filter.category = filterURL.category;
+    filter.price.min = filterURL.price.min;
+    filter.price.max = filterURL.price.max;
+    filter.stock.min = filterURL.stock.min;
+    filter.stock.max = filterURL.stock.max;
+
     const title = this.createTitle(MainPage.TextObject.MainTitle);
     title.classList.add('main__title');
     this.container.append(title);
@@ -481,27 +490,18 @@ class MainPage extends Page {
       }
     });
 
-    window.addEventListener('popstate', () => {
-      this.params = transformToURLParams();
-      const filterURL = filterParam(this.params);
-
-      filter.brand = filterURL.brand;
-      filter.category = filterURL.category;
-      filter.price.min = filterURL.price.min;
-      filter.price.max = filterURL.price.max;
-      filter.stock.min = filterURL.stock.min;
-      filter.stock.max = filterURL.stock.max;
-
+    if (filter.category) {
       for (let i = 0; i < arrCategory.length; i += 1) {
         const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
-
         if (filter.category.includes(arrCategory[i])) {
           category.checked = true;
         } else {
           category.checked = false;
         }
       }
+    }
 
+    if (filter.brand) {
       for (let i = 0; i < arrBrand.length; i += 1) {
         const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
         if (filter.brand.includes(arrBrand[i])) {
@@ -510,94 +510,38 @@ class MainPage extends Page {
           brand.checked = false;
         }
       }
-
-      if (this.params.sort) {
-        sortSelect.value = this.params.sort;
-        this.copyProducts = sorting(this.copyProducts, sortSelect.value);
-      } else {
-        sortSelect.value = '0';
-        this.copyProducts = sorting(this.copyProducts, sortSelect.value);
-      }
-
-      if (this.params.search) {
-        sortSearch.value = this.params.search;
-      } else {
-        sortSearch.value = '';
-      }
-
-      if (this.params.view === 'small') {
-        productContainer.classList.add('change_view');
-      } else {
-        productContainer.classList.remove('change_view');
-      }
-
-      inputPriceFrom.value = `${filter.price.min}`;
-      inputPriceTo.value = `${filter.price.max}`;
-      priceControlValueFrom.textContent = inputPriceFrom.value;
-      priceControlValueTo.textContent = inputPriceTo.value;
-      inputAmountFrom.value = `${filter.stock.min}`;
-      inputAmountTo.value = `${filter.stock.max}`;
-      amountControlValueFrom.textContent = inputAmountFrom.value;
-      amountControlValueTo.textContent = inputAmountTo.value;
-
-      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
-      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-    });
-
-    if (window.location.search) {
-      this.params = transformToURLParams();
-      const filterURL = filterParam(this.params);
-
-      filter.brand = filterURL.brand;
-      filter.category = filterURL.category;
-      filter.price.min = filterURL.price.min;
-      filter.price.max = filterURL.price.max;
-      filter.stock.min = filterURL.stock.min;
-      filter.stock.max = filterURL.stock.max;
-
-      if (filter.category) {
-        for (let i = 0; i < arrCategory.length; i += 1) {
-          const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
-          if (filter.category.includes(arrCategory[i])) {
-            category.checked = true;
-          }
-        }
-      }
-
-      if (filter.brand) {
-        for (let i = 0; i < arrBrand.length; i += 1) {
-          const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
-          if (filter.brand.includes(arrBrand[i])) {
-            brand.checked = true;
-          }
-        }
-      }
-
-      if (this.params.sort) {
-        sortSelect.value = this.params.sort;
-        this.copyProducts = sorting(this.copyProducts, sortSelect.value);
-      }
-
-      if (this.params.search) {
-        sortSearch.value = this.params.search;
-      }
-
-      if (this.params.view === 'small') {
-        productContainer.classList.add('change_view');
-      }
-
-      inputPriceFrom.value = `${filter.price.min}`;
-      inputPriceTo.value = `${filter.price.max}`;
-      priceControlValueFrom.textContent = inputPriceFrom.value;
-      priceControlValueTo.textContent = inputPriceTo.value;
-      inputAmountFrom.value = `${filter.stock.min}`;
-      inputAmountTo.value = `${filter.stock.max}`;
-      amountControlValueFrom.textContent = inputAmountFrom.value;
-      amountControlValueTo.textContent = inputAmountTo.value;
-
-      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
-      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
     }
+
+    if (this.params.sort) {
+      sortSelect.value = this.params.sort;
+      this.copyProducts = sorting(this.copyProducts, sortSelect.value);
+    } else {
+      sortSelect.value = '0';
+      this.copyProducts = sorting(this.copyProducts, sortSelect.value);
+    }
+
+    if (this.params.search) {
+      sortSearch.value = this.params.search;
+    } else {
+      sortSearch.value = '';
+    }
+    if (this.params.view === 'small') {
+      productContainer.classList.add('change_view');
+    } else {
+      productContainer.classList.remove('change_view');
+    }
+    inputPriceFrom.value = `${filter.price.min}`;
+    inputPriceTo.value = `${filter.price.max}`;
+    priceControlValueFrom.textContent = inputPriceFrom.value;
+    priceControlValueTo.textContent = inputPriceTo.value;
+    inputAmountFrom.value = `${filter.stock.min}`;
+    inputAmountTo.value = `${filter.stock.max}`;
+    amountControlValueFrom.textContent = inputAmountFrom.value;
+    amountControlValueTo.textContent = inputAmountTo.value;
+
+    this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+    this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+
     return this.container;
   }
 }

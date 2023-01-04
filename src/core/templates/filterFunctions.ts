@@ -105,7 +105,8 @@ export function sorting(arr: ProductType[], value: string) {
       arr.sort((a: ProductType, b: ProductType) => (a.discountPercentage < b.discountPercentage ? 1 : -1));
       break;
     case '0':
-      arr = productsList.products.concat();
+      arr = [...productsList.products];
+      break;
   }
 
   return arr;

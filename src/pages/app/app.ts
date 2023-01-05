@@ -11,9 +11,12 @@ export const enum PageIds {
   GoodsPage = 'goods',
   BasketPage = 'cart',
 }
-
-export const itemsInBasket: Array<number> = [1, 4, 2, 3, 1, 4, 5, 3];
-export let uniqueItemsInBasket = new Set<number>();
+const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
+  ? JSON.parse(localStorage.getItem('itemsInBasket')!)
+  : [];
+let uniqueItemsInBasket = new Set(itemsInBasket);
+/*export const itemsInBasket: Array<number> = [1, 4, 2, 3, 1, 4, 5, 3];
+export let uniqueItemsInBasket = new Set<number>();*/
 
 export const countItemInBasket = document.querySelector('.item__text-count');
 export const sumItemInBasket = document.querySelector('.item__text-sum');

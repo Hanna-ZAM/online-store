@@ -1,8 +1,22 @@
 import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
-import { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
+import { /*itemsInBasket, */ sumItemInBasket /*, uniqueItemsInBasket */ } from '../../pages/app/app';
+import {
+  changeBasket,
+  changeQuantity,
+  deleteItemFromBasket,
+  checkCorrectInput,
+  confirm,
+} from '../../core/templates/function';
 
-import { changeBasket, changeQuantity, deleteItemFromBasket, checkCorrectInput, confirm } from '../../core/templates/function';
+let itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
+  ?*/ JSON.parse(localStorage.getItem('itemsInBasket')!)/*
+  : []*/;
+let uniqueItemsInBasket = new Set(itemsInBasket);
+console.log(itemsInBasket);
+console.log('uniqueItemsInBasket' + uniqueItemsInBasket);
+console.log(localStorage);
+
 
 export const enum Promo {
   promo5 = '5',
@@ -10,6 +24,8 @@ export const enum Promo {
   promo8 = '8',
 }
 const discountArr: Array<number> = [];
+
+
 class BasketPage extends Page {
   static TextObject = {
     MainTitle: 'Basket',
@@ -20,6 +36,10 @@ class BasketPage extends Page {
   }
 
   createBasketItem(n: number): HTMLElement {
+    let itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
+    ?*/ JSON.parse(localStorage.getItem('itemsInBasket')!)/*
+    : []*/;
+  let uniqueItemsInBasket = new Set(itemsInBasket);
     const item = this.createElement('', 'li', 'basket-item');
     item.setAttribute('id', `${[...uniqueItemsInBasket][n]}`);
     const buttonDel = this.createElement('Delete X', 'p', 'basket-item__del');
@@ -28,6 +48,7 @@ class BasketPage extends Page {
     itemContainer.classList.add('flex-container-space');
     const itemNumber = this.createElement(`${n + 1}`, 'p', 'basket-item__count');
     const itemImg = this.createElement('', 'img', 'basket-item__img');
+    console.log(productsList.products[[...uniqueItemsInBasket][n] - 1]);
     itemImg.setAttribute('src', `${productsList.products[[...uniqueItemsInBasket][n] - 1].thumbnail}`);
     itemImg.setAttribute('alt', 'photo');
 
@@ -117,16 +138,14 @@ class BasketPage extends Page {
       end = uniqueItemsInBasket.size;
     }
     countPage.innerHTML = ` Page ${pageNum} from ${pageCount} `;
-
+if (!(uniqueItemsInBasket.size === 0)) {
     for (let i = start; i < end; i++) {
       const item = this.createBasketItem(i);
       basketList.appendChild(item);
       const btnMinus = item.children[1].children[3].children[0].children[0];
       const btnPlus = item.children[1].children[3].children[0].children[2];
       const btnDel = item.children[0];
-      console.log(btnDel);
       btnDel.addEventListener('click', (e) => {
-        console.log(btnDel);
         uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
         console.log(uniqueItemsInBasket);
         this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
@@ -134,7 +153,6 @@ class BasketPage extends Page {
 
       btnMinus.addEventListener('click', (e) => {
         if (item.children[1].children[3].children[0].children[1].innerHTML === '1') {
-          console.log('deee' + item.id);
           uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
         } else {
@@ -146,19 +164,20 @@ class BasketPage extends Page {
         changeQuantity(item, 'up');
       });
     }
+  }
     return basketList;
   }
 
   createModalWindow(): HTMLElement {
-    let correctName: boolean = false;
-    let correctPhone: boolean= false;
-    let correctAdress: boolean= false;
-    let correctEmail: boolean= false;
-    let correctCard: boolean= false;
-    let correctCVV: boolean= false;
-    let correctDate: boolean= false;
-    let arrCorrect:Array<boolean> = [];
-    const arrNum=[0,1,2,3,4,5,6,7,8,9];
+    let correctName = false;
+    let correctPhone = false;
+    let correctAdress = false;
+    let correctEmail = false;
+    let correctCard = false;
+    let correctCVV = false;
+    let correctDate = false;
+    const arrCorrect: Array<boolean> = [];
+    const arrNum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     const background = this.createElement('', 'div', 'back');
     const modalWindow = this.createElement('', 'div', 'modal-window');
@@ -169,17 +188,21 @@ class BasketPage extends Page {
     inputName.addEventListener('input', (e) => {
       correctName = checkCorrectInput(inputName as HTMLInputElement, 2, 3);
       console.log('correctName ' + correctName);
-      arrCorrect[0]=correctName;
+      arrCorrect[0] = correctName;
       return correctName;
     });
     const inputPhone = this.createElement('', 'input', 'input');
     inputPhone.setAttribute('type', 'tel');
     inputPhone.setAttribute('placeholder', 'Phone: +375290000000');
     inputPhone.addEventListener('input', (e) => {
-      (inputPhone as HTMLInputElement).value= `+${((inputPhone as HTMLInputElement).value.split('').slice(1).filter(el=>arrNum.includes(Number(el))).join(''))}`;
+      (inputPhone as HTMLInputElement).value = `+${(inputPhone as HTMLInputElement).value
+        .split('')
+        .slice(1)
+        .filter((el) => arrNum.includes(Number(el)))
+        .join('')}`;
       correctPhone = checkCorrectInput(inputPhone as HTMLInputElement, 1, 10, '+');
       console.log('correctPhone ' + correctPhone);
-      arrCorrect[1]=correctPhone;
+      arrCorrect[1] = correctPhone;
       return correctPhone;
     });
 
@@ -189,7 +212,7 @@ class BasketPage extends Page {
     inputAdress.addEventListener('input', (e) => {
       correctAdress = checkCorrectInput(inputAdress as HTMLInputElement, 3, 5);
       console.log('correctAdress ' + correctAdress);
-      arrCorrect[2]=correctAdress;
+      arrCorrect[2] = correctAdress;
       return correctAdress;
     });
 
@@ -198,11 +221,9 @@ class BasketPage extends Page {
     inputEmail.setAttribute('placeholder', 'Email');
     inputEmail.addEventListener('input', (e) => {
       const value = (inputEmail as HTMLInputElement).value.split('@');
-      console.log(value.length === 2);
-      console.log(value[1].split('.').length > 1);
       correctEmail = value.length === 2 && value[1].split('.').length > 1;
       console.log('correctEmail ' + correctEmail);
-      arrCorrect[3]=correctEmail;
+      arrCorrect[3] = correctEmail;
       return correctEmail;
     });
 
@@ -211,7 +232,6 @@ class BasketPage extends Page {
     modalWindow.appendChild(inputPhone);
     modalWindow.appendChild(inputAdress);
     modalWindow.appendChild(inputEmail);
-
 
     const flexContainerCard = this.createElement('', 'div', 'flex-container');
     flexContainerCard.classList.add('flex-container__card');
@@ -225,24 +245,25 @@ class BasketPage extends Page {
     inputCard.setAttribute('placeholder', 'Number card');
 
     inputCard.addEventListener('input', (e) => {
-      if ((inputCard as HTMLInputElement).value.split('')[0] ==='5') {
-      (inputImg as HTMLImageElement).src = '../img/mastercard.svg';
-      } else if ((inputCard as HTMLInputElement).value.split('')[0]==='4') {
-          (inputImg as HTMLImageElement).src = '../img/visa.svg'
-      } else if ((inputCard as HTMLInputElement).value.split('')[0]==='2') {
-        (inputImg as HTMLImageElement).src = '../img/mir.png'
-    } else  {
-            (inputImg as HTMLImageElement).src = '../img/card.svg'
+      if ((inputCard as HTMLInputElement).value.split('')[0] === '5') {
+        (inputImg as HTMLImageElement).src = '../img/mastercard.svg';
+      } else if ((inputCard as HTMLInputElement).value.split('')[0] === '4') {
+        (inputImg as HTMLImageElement).src = '../img/visa.svg';
+      } else if ((inputCard as HTMLInputElement).value.split('')[0] === '2') {
+        (inputImg as HTMLImageElement).src = '../img/mir.png';
+      } else {
+        (inputImg as HTMLImageElement).src = '../img/card.svg';
       }
-      (inputCard as HTMLInputElement).value= ((inputCard as HTMLInputElement).value.split('').filter(el=>arrNum.includes(Number(el))).join(''));
+      (inputCard as HTMLInputElement).value = (inputCard as HTMLInputElement).value
+        .split('')
+        .filter((el) => arrNum.includes(Number(el)))
+        .join('');
       if ((inputCard as HTMLInputElement).value.length > 16) {
         (inputCard as HTMLInputElement).value = (inputCard as HTMLInputElement).value.substr(0, 16);
-        /*const value = (inputCard as HTMLInputElement).value.split('');
-        (inputCard as HTMLInputElement).value =`${value.slice(0, 4).join('')} ${value.slice(4, 8).join('')} ${value.slice(8, 12).join('')} ${value.slice(12, 16).join('')}`*/
       }
       correctCard = (inputCard as HTMLInputElement).value.length === 16;
       console.log('correctCard ' + correctCard);
-      arrCorrect[4]=correctCard;
+      arrCorrect[4] = correctCard;
       return correctCard;
     });
     const flexContainerCardSmall = this.createElement('', 'div', 'flex-container');
@@ -259,15 +280,18 @@ class BasketPage extends Page {
       value = (inputCvv as HTMLInputElement).value;
       correctCVV = value.length === 3;
       console.log('correctCVV ' + correctCVV);
-      arrCorrect[5]=correctCVV;
+      arrCorrect[5] = correctCVV;
       return correctCVV;
     });
     const inputDate = this.createElement('', 'input', 'input-small');
     inputDate.setAttribute('type', 'text');
     inputDate.setAttribute('placeholder', 'Date');
     inputDate.addEventListener('input', (e) => {
-      (inputDate as HTMLInputElement).value= (inputDate as HTMLInputElement).value.split('').filter(el=>arrNum.includes(Number(el))).join('');
-      if ((inputDate as HTMLInputElement).value.length>2){
+      (inputDate as HTMLInputElement).value = (inputDate as HTMLInputElement).value
+        .split('')
+        .filter((el) => arrNum.includes(Number(el)))
+        .join('');
+      if ((inputDate as HTMLInputElement).value.length > 2) {
         if (Number((inputDate as HTMLInputElement).value.slice(0, 2)) > 12) {
           (inputDate as HTMLInputElement).value = '12';
         } else if (Number((inputDate as HTMLInputElement).value.slice(0, 2)) < 1) {
@@ -276,10 +300,13 @@ class BasketPage extends Page {
         if ((inputDate as HTMLInputElement).value.length > 4) {
           (inputDate as HTMLInputElement).value = (inputDate as HTMLInputElement).value.substr(0, 4);
         }
-      (inputDate as HTMLInputElement).value = `${(inputDate as HTMLInputElement).value.slice(0,2)}/${(inputDate as HTMLInputElement).value.slice(2,4)}`;
+        (inputDate as HTMLInputElement).value = `${(inputDate as HTMLInputElement).value.slice(
+          0,
+          2
+        )}/${(inputDate as HTMLInputElement).value.slice(2, 4)}`;
       }
-      correctDate=((inputDate as HTMLInputElement).value.length===5);
-      arrCorrect[6]=correctDate;
+      correctDate = (inputDate as HTMLInputElement).value.length === 5;
+      arrCorrect[6] = correctDate;
       return correctDate;
     });
 
@@ -384,7 +411,6 @@ class BasketPage extends Page {
           }
         });
         btnDel.addEventListener('click', (e) => {
-          console.log(btnDel);
           uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
           console.log(uniqueItemsInBasket);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
@@ -418,7 +444,7 @@ class BasketPage extends Page {
       const header = document.querySelector('.header');
       header?.appendChild(modal);
       modal.addEventListener('click', (e: Event) => {
-        if (e.target == modal && modal.children[0]!==(e.target)) {
+        if (e.target == modal && modal.children[0] !== e.target) {
           header?.removeChild(modal);
         }
       });

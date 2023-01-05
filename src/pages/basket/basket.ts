@@ -266,6 +266,7 @@ class BasketPage extends Page {
     flexContainer2.appendChild(buttonContinue);
 
     const discount = this.createElement('Discount: 0', 'p', 'discount');
+    const quantity = this.createElement(`Total  ${itemsInBasket.length} items`, 'p', 'discount');
     const totalWithoutDiscont = this.createElement(
       `Total price: ${sumItemInBasket.innerHTML}`,
       'p',
@@ -281,6 +282,9 @@ class BasketPage extends Page {
         total.innerHTML = `Total price: ${Math.ceil(
           (Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - Number(promoDiscount))) / 100
         ).toString()} $`;
+        discount.innerHTML=`Discount: ${Number(sumItemInBasket!.innerHTML.split(' ')[0])-Math.ceil(
+          (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
+        )} $`;
       }
     });
 
@@ -293,7 +297,7 @@ class BasketPage extends Page {
           d = Number(Promo.promo8);
         } else if ((promocode as HTMLInputElement).value === 'promo5') {
           d = Number(Promo.promo5);
-        } /*else promoDiscount = '0';*/
+        }
         promoDiscount = discountArr.reduce((sum: number, cur: number) => sum + cur, 0);
         if (d !== 0) {
           promoText.innerHTML = `promo${d}, discount ${d}%`;
@@ -303,43 +307,42 @@ class BasketPage extends Page {
             discountArr.push(d);
             promoDiscount = discountArr.reduce((sum: number, cur: number) => sum + cur, 0);
             totalWithoutDiscont.classList.remove('no-visible');
-            console.log('promoDiscount' + promoDiscount);
-            totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket.innerHTML}`;
+            totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket!.innerHTML}`;
             total.innerHTML = `Total price: ${Math.ceil(
               (Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
             ).toString()} $`;
+            discount.innerHTML=`Discount: ${Number(sumItemInBasket!.innerHTML.split(' ')[0])-Math.ceil(
+              (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
+            )} $`;
             const promoItem = this.createElement(`promo${d} is used, discount ${d}%`, 'p', 'promoitem');
             promoContainer.appendChild(promoItem);
             const promoBtn = this.createElement(`del`, 'button', 'button-small');
             promoItem.appendChild(promoBtn);
+            promoBtn.addEventListener('click', e=>{
+              promoContainer.removeChild(promoItem);
+              discountArr.splice(discountArr.indexOf(d), 1);
+              if (discountArr.length===0) {
+                totalWithoutDiscont.classList.add('no-visible');
+              }
+              promoDiscount = discountArr.reduce((sum: number, cur: number) => sum + cur, 0);
+              total.innerHTML = `Total price: ${Math.ceil(
+                (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
+              ).toString()} $`;
+              discount.innerHTML=`Discount: ${Number(sumItemInBasket!.innerHTML.split(' ')[0])-Math.ceil(
+                (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
+                )} $`;
+              })
             promoText.innerHTML = `Try promo10, promo8, promo5`;
           });
-          /*totalWithoutDiscont.classList.remove('no-visible');
-        console.log('promoDiscount' + promoDiscount);
-        totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket!.innerHTML}`;
-        total.innerHTML = `Total price: ${Math.ceil(
-          (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - Number(promoDiscount))) / 100
-        ).toString()} $`;
-        const promoItem = this.createElement(
-          `promo${promoDiscount} is used, discount ${promoDiscount}%`,
-          'p',
-          'promoitem'
-        );
-        promoContainer.appendChild(promoItem);
-        const promoBtn = this.createElement(`del`, 'button', 'button-small');
-        promoItem.appendChild(promoBtn);
-      } else {
-        totalWithoutDiscont.classList.add('no-visible');
-        total.innerHTML = `Total price: ${sumItemInBasket!.innerHTML}`;
-        /*promoContainer.removeChild(promoContainer.children[0]);
-        promoContainer.removeChild(promoContainer.children[1]);*/
         }
       } else {
         promoText.innerHTML = `You can use only 2 promocode`;
       }
     });
 
+    this.container.append(quantity);
     this.container.append(discount);
+
     this.container.append(totalWithoutDiscont);
     this.container.append(total);
     this.container.append(flexContainer2);

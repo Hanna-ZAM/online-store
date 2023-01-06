@@ -1,5 +1,7 @@
-import { itemsInBasket, countItemInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
+import { /* itemsInBasket, */ countItemInBasket, sumItemInBasket /*, uniqueItemsInBasket*/ } from '../../pages/app/app';
 import productsList from '../../core/templates/product';
+let itemsInBasket: Array<number> = JSON.parse(localStorage.getItem('itemsInBasket')!);
+let uniqueItemsInBasket = new Set(itemsInBasket);
 
 export function changeBasket(Id: number, add = true): Array<number> {
   if (add) {
@@ -11,9 +13,11 @@ export function changeBasket(Id: number, add = true): Array<number> {
   sumItemInBasket.innerHTML = `${itemsInBasket
     .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
     .toString()} $`;
+  uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
   return itemsInBasket;
 }
 export function createUniqueItemsInBasket(arr: Array<number>): Set<number> {
+  localStorage.setItem('itemsInBasket', JSON.stringify(itemsInBasket));
   arr.forEach((el) => {
     uniqueItemsInBasket.add(el);
   });
@@ -51,10 +55,45 @@ export function changeQuantity(item: HTMLElement, direction: string): HTMLElemen
 export function deleteItemFromBasket(id: number, arr: Array<number>): Set<number> {
   const n = arr.indexOf(id);
   arr.splice(n, 1);
-  console.log('вошли');
   const result = new Set(arr);
   while (itemsInBasket.includes(id)) {
     changeBasket(id, false);
   }
   return result;
+}
+
+export function checkCorrectInput(
+  input: HTMLInputElement,
+  lengthString: number,
+  lengthWord: number,
+  start?: string
+): boolean {
+  const inputValue = input.value.split(' ');
+  let correct =
+    inputValue.length > lengthString - 1 &&
+    inputValue.length === inputValue.filter((el) => el.length > lengthWord - 1).length;
+  if (start) {
+    const startInput = input.value[0];
+    correct = correct && startInput === start && inputValue.length === lengthString;
+  }
+  return correct;
+}
+
+export function confirm(arr: Array<boolean>, element: HTMLElement) {
+  const arr1 = arr.filter((el) => el === true);
+  if ((arr.length = arr1.length)) {
+    const thanks = document.createElement('div');
+    thanks.innerHTML = 'Congratulations, your order has been placed.';
+    thanks.classList.add('modal-window');
+    thanks.classList.add('thanks-window');
+    element.replaceWith(thanks);
+    const timeReload: ReturnType<typeof setTimeout> = setTimeout(function () {
+      window.location.href = '';
+      console.log('111111111');
+    }, 5000);
+    itemsInBasket = [];
+    localStorage.setItem('itemsInBasket', JSON.stringify(itemsInBasket));
+    uniqueItemsInBasket = new Set([]);
+    return element;
+  }
 }

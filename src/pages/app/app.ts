@@ -12,27 +12,32 @@ export const enum PageIds {
   BasketPage = 'cart',
 }
 
-export const itemsInBasket: Array<number> = [1, 4, 2, 3, 1, 4, 5, 3]; //- здесь будут Id товаров, которые добавлены в корзину
-export let uniqueItemsInBasket = new Set<number>([...itemsInBasket]); //- здесь будут Id товаров, которые добавлены в корзину
+const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
+  ? JSON.parse(localStorage.getItem('itemsInBasket')!)
+  : [];
+let uniqueItemsInBasket = new Set(itemsInBasket);
+/*export const itemsInBasket: Array<number> = [1, 4, 2, 3, 1, 4, 5, 3];
+export let uniqueItemsInBasket = new Set<number>();*/
 
-export const countItemInBasket = document.querySelector('.item__text-count') as HTMLElement;
-export const sumItemInBasket = document.querySelector('.item__text-sum') as HTMLElement;
-sumItemInBasket.innerHTML = `${itemsInBasket
-  .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-  .toString()} $`;
+export const countItemInBasket = document.querySelector('.item__text-count');
+export const sumItemInBasket = document.querySelector('.item__text-sum');
 
 const linkToCart = document.querySelector('#link_to_cart');
 const linkToMain = document.querySelector('#link_to_main');
+/*sumItemInBasket!.innerHTML=`${itemsInBasket.reduce((acc:number, el:number):number => (acc + productsList.products[el-1].price), 0).toString()} $`;*/
+
 
 class App {
   private static container = document.getElementById('root') as HTMLElement;
 
   static renderNewPage(idPage: string) {
+    console.log('new');
     App.container.innerHTML = '';
     let page: Page | null = null;
 
     if (idPage === PageIds.MainPage) {
       page = new MainPage(idPage);
+      history.pushState({}, '', `/main`);
     } else if (idPage === PageIds.GoodsPage) {
       page = new GoodsPage(idPage);
     } else if (idPage === PageIds.BasketPage) {
@@ -42,19 +47,23 @@ class App {
     }
 
     if (page) {
+      // window.location.hash = `#${idPage}`;
       const pageHTML = page.render();
       App.container.append(pageHTML);
     }
   }
 
+
   private getCurrentRoute() {
     return window.location.pathname.split('/').filter(Boolean)[0];
+
   }
 
   private changeRoute(route: string) {
     history.pushState({}, '', `/${route}`);
     App.renderNewPage(route);
   }
+
 
   run() {
     window.addEventListener('popstate', () => {
@@ -63,13 +72,16 @@ class App {
     if (window.location.pathname === '/') {
       history.pushState({}, '', `/main`);
     }
+
     linkToCart?.addEventListener('click', () => {
       this.changeRoute('cart');
     });
     linkToMain?.addEventListener('click', () => {
       this.changeRoute('main');
     });
+
     App.renderNewPage(this.getCurrentRoute());
+
     uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
     countItemInBasket.innerHTML = itemsInBasket.length.toString();
     console.log(countItemInBasket.innerHTML);

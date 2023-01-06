@@ -1,9 +1,16 @@
 import './main.css';
 import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
-import { itemsInBasket, uniqueItemsInBasket, countItemInBasket, sumItemInBasket } from '../app/app';
+
+import { /*itemsInBasket, uniqueItemsInBasket,*/ countItemInBasket, sumItemInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
 import { syncURL, Query, transformToURLParams, filterParam } from '../../core/templates/queryFunction';
+import { changeBasket } from '../../core/templates/function';
+const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
+  ? JSON.parse(localStorage.getItem('itemsInBasket')!)
+  : [];
+let uniqueItemsInBasket = new Set(itemsInBasket);
+
 
 type T = keyof Query;
 
@@ -80,16 +87,17 @@ class MainPage extends Page {
       if (!btnAddBasket.classList.contains('added_in_cart')) {
         btnAddBasket.classList.add('added_in_cart');
         btnAddBasket.innerText = 'in cart';
-        itemsInBasket.push(arr[i].id);
-        uniqueItemsInBasket.add(arr[i].id);
-        countItemInBasket.innerText = `${itemsInBasket.length}`;
-        sumItemInBasket.innerText = `${itemsInBasket
+
+        changeBasket(i + 1);
+        /*countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
+        sumItemInBasket!.innerHTML = `${itemsInBasket
           .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-          .toString()} $`;
+          .toString()} $`;*/
       } else {
         btnAddBasket.classList.remove('added_in_cart');
         btnAddBasket.innerText = 'add to cart';
-        const indexArr: number[] = [];
+        /*const indexArr: number[] = [];
+
         itemsInBasket.forEach((item, index) => {
           if (item === arr[i].id) {
             indexArr.push(index);
@@ -99,10 +107,12 @@ class MainPage extends Page {
           itemsInBasket.splice(indexArr[i], 1);
         }
         uniqueItemsInBasket.delete(arr[i].id);
-        countItemInBasket.innerText = `${itemsInBasket.length}`;
-        sumItemInBasket.innerText = `${itemsInBasket
+
+        countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
+        sumItemInBasket!.innerHTML = `${itemsInBasket
           .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-          .toString()} $`;
+          .toString()} $`;*/
+        changeBasket(i + 1, false);
       }
     });
 
@@ -490,6 +500,7 @@ class MainPage extends Page {
       }
     });
 
+
     if (filter.category) {
       for (let i = 0; i < arrCategory.length; i += 1) {
         const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
@@ -541,6 +552,7 @@ class MainPage extends Page {
 
     this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
     this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+
 
     return this.container;
   }

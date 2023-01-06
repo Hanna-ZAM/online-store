@@ -142,6 +142,7 @@ main {
 }
 
 .button{
+  cursor: pointer;
   padding: 20px 30px;
   background-color: #72927A;
   border: 1.5px solid #72927A;
@@ -164,6 +165,7 @@ main {
 }
 
 .button-anti{
+  cursor: pointer;
   background-color:rgba(255, 255, 255, 0.0);
   color: #72927A;
   margin-left: 30px;

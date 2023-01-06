@@ -2,15 +2,14 @@ import './main.css';
 import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
 
-import { /*itemsInBasket, uniqueItemsInBasket,*/ countItemInBasket, sumItemInBasket } from '../app/app';
+import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
 import { syncURL, Query, transformToURLParams, filterParam } from '../../core/templates/queryFunction';
 import { changeBasket } from '../../core/templates/function';
-const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
-  ? JSON.parse(localStorage.getItem('itemsInBasket')!)
-  : [];
-let uniqueItemsInBasket = new Set(itemsInBasket);
-
+// const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
+//   ? JSON.parse(localStorage.getItem('itemsInBasket')!)
+//   : [];
+// const uniqueItemsInBasket = new Set(itemsInBasket);
 
 type T = keyof Query;
 
@@ -96,7 +95,7 @@ class MainPage extends Page {
       } else {
         btnAddBasket.classList.remove('added_in_cart');
         btnAddBasket.innerText = 'add to cart';
-        /*const indexArr: number[] = [];
+        const indexArr: number[] = [];
 
         itemsInBasket.forEach((item, index) => {
           if (item === arr[i].id) {
@@ -108,10 +107,10 @@ class MainPage extends Page {
         }
         uniqueItemsInBasket.delete(arr[i].id);
 
-        countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
-        sumItemInBasket!.innerHTML = `${itemsInBasket
-          .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-          .toString()} $`;*/
+        // countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
+        // sumItemInBasket!.innerHTML = `${itemsInBasket
+        //   .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
+        //   .toString()} $`;
         changeBasket(i + 1, false);
       }
     });
@@ -500,7 +499,6 @@ class MainPage extends Page {
       }
     });
 
-
     if (filter.category) {
       for (let i = 0; i < arrCategory.length; i += 1) {
         const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
@@ -552,7 +550,6 @@ class MainPage extends Page {
 
     this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
     this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
-
 
     return this.container;
   }

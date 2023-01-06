@@ -1,8 +1,16 @@
 import './main.css';
 import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
-import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
+import { /*itemsInBasket, uniqueItemsInBasket,*/ countItemInBasket, sumItemInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
+import { syncURL, Query, transformToURLParams, filterParam } from '../../core/templates/queryFunction';
+import { changeBasket } from '../../core/templates/function';
+const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
+  ? JSON.parse(localStorage.getItem('itemsInBasket')!)
+  : [];
+let uniqueItemsInBasket = new Set(itemsInBasket);
+
+type T = keyof Query;
 
 class MainPage extends Page {
   copyProducts: ProductType[];
@@ -11,6 +19,7 @@ class MainPage extends Page {
   priceMin: number;
   amountMax: number;
   amountMin: number;
+  params: Query;
   static TextObject = {
     MainTitle: 'Catalog',
   };
@@ -23,6 +32,7 @@ class MainPage extends Page {
     this.priceMin = 0;
     this.amountMax = 0;
     this.amountMin = 0;
+    this.params = {};
   }
 
   filterProduct(key: string): string[] {
@@ -60,6 +70,7 @@ class MainPage extends Page {
     const btnOpenCard = this.createElement('', 'button', 'card__open-card_btn');
     const imgCard = this.createElement('', 'img', 'card__image');
     imgCard.setAttribute('src', `${arr[i].thumbnail}`);
+    imgCard.setAttribute('loading', 'lazy');
     const btnAddBasket = this.createElement('add to cart', 'button', 'card__add-basket_btn');
     const cardName = this.createElement(`${arr[i].title}`, 'div', 'card__name');
     const cardPrice = this.createElement(`${arr[i].price} $`, 'div', 'card__price');
@@ -71,12 +82,42 @@ class MainPage extends Page {
     cardContainer.append(cardPrice);
 
     btnAddBasket.addEventListener('click', () => {
-      itemsInBasket.push(arr[i].id);
-      uniqueItemsInBasket.add(arr[i].id);
-      console.log(itemsInBasket);
-      console.log(uniqueItemsInBasket);
+      if (!btnAddBasket.classList.contains('added_in_cart')) {
+        btnAddBasket.classList.add('added_in_cart');
+        btnAddBasket.innerText = 'in cart';
+        changeBasket(i + 1);
+        /*countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
+        sumItemInBasket!.innerHTML = `${itemsInBasket
+          .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
+          .toString()} $`;*/
+      } else {
+        btnAddBasket.classList.remove('added_in_cart');
+        btnAddBasket.innerText = 'add to cart';
+        /*const indexArr: number[] = [];
+        itemsInBasket.forEach((item, index) => {
+          if (item === arr[i].id) {
+            indexArr.push(index);
+          }
+        });
+        for (let i = indexArr.length - 1; i >= 0; i -= 1) {
+          itemsInBasket.splice(indexArr[i], 1);
+        }
+        uniqueItemsInBasket.delete(arr[i].id);
+        countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
+        sumItemInBasket!.innerHTML = `${itemsInBasket
+          .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
+          .toString()} $`;*/
+        changeBasket(i + 1, false);
+      }
     });
 
+    if (itemsInBasket.includes(arr[i].id)) {
+      btnAddBasket.classList.add('added_in_cart');
+      btnAddBasket.innerText = 'in cart';
+    } else {
+      btnAddBasket.classList.remove('added_in_cart');
+      btnAddBasket.innerText = 'add to cart';
+    }
     return cardContainer;
   }
 
@@ -139,11 +180,15 @@ class MainPage extends Page {
       elementSpan.addEventListener('click', () => {
         if (!filter.category.includes(elementSpan.id)) {
           filter.category.push(elementSpan.id);
+          this.params.category = `${filter.category.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         } else {
           const index = filter.category.indexOf(elementSpan.id);
           filter.category.splice(index, 1);
+          this.params.category = `${filter.category.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         }
@@ -175,11 +220,15 @@ class MainPage extends Page {
       elementSpan.addEventListener('click', () => {
         if (!filter.brand.includes(elementSpan.id)) {
           filter.brand.push(elementSpan.id);
+          this.params.brand = `${filter.brand.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         } else {
           const index = filter.brand.indexOf(elementSpan.id);
           filter.brand.splice(index, 1);
+          this.params.brand = `${filter.brand.join(',')}`;
+          syncURL(this.params);
           this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
           this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
         }
@@ -227,6 +276,8 @@ class MainPage extends Page {
       filter.price.min = +inputPriceFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      this.params.priceFrom = `${inputPriceFrom.value}`;
+      syncURL(this.params);
     });
 
     inputPriceTo.addEventListener('input', () => {
@@ -242,6 +293,8 @@ class MainPage extends Page {
       filter.price.max = +inputPriceTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      this.params.priceTo = `${inputPriceTo.value}`;
+      syncURL(this.params);
     });
 
     this.filterProduct('stock');
@@ -277,6 +330,8 @@ class MainPage extends Page {
       filter.stock.min = +inputAmountFrom.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      this.params.stockFrom = `${inputAmountFrom.value}`;
+      syncURL(this.params);
     });
 
     inputAmountTo.addEventListener('input', () => {
@@ -292,6 +347,8 @@ class MainPage extends Page {
       filter.stock.max = +inputAmountTo.value;
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      this.params.stockTo = `${inputAmountTo.value}`;
+      syncURL(this.params);
     });
 
     const sortContainer = this.createElement('', 'div', 'sort__container');
@@ -329,12 +386,54 @@ class MainPage extends Page {
     sortSearch.addEventListener('input', () => {
       this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
       this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+      this.params.search = sortSearch.value;
+      syncURL(this.params);
+    });
+
+    const changeView = this.createElement('Change view', 'button', 'sort__change_view');
+    sortContainer.appendChild(changeView);
+
+    changeView.addEventListener('click', () => {
+      changeView.classList.add('yellow_color');
+      setTimeout(() => {
+        changeView.classList.remove('yellow_color');
+      }, 1000);
+      if (!productContainer.classList.contains('change_view')) {
+        productContainer.classList.add('change_view');
+        this.params.view = 'small';
+        syncURL(this.params);
+      } else {
+        productContainer.classList.remove('change_view');
+        this.params.view = 'big';
+        syncURL(this.params);
+      }
+    });
+
+    const copyLink = this.createElement('Copy link', 'button', 'sort__copy_link');
+    sortContainer.appendChild(copyLink);
+
+    copyLink.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href);
+      copyLink.classList.add('yellow_color');
+      copyLink.innerText = 'Copied';
+      setTimeout(() => {
+        copyLink.classList.remove('yellow_color');
+        copyLink.innerText = 'Copy link';
+      }, 1000);
     });
 
     const sortReset = this.createElement('Reset filters', 'button', 'sort__reset');
     sortContainer.appendChild(sortReset);
 
     sortReset.addEventListener('click', () => {
+      sortReset.classList.add('yellow_color');
+      setTimeout(() => {
+        sortReset.classList.remove('yellow_color');
+      }, 1000);
+      for (const key in this.params) {
+        this.params[key as T] = '';
+      }
+      syncURL(this.params);
       this.showCards(productsList.products, productContainer, filterHeaderAmount);
       this.copyProducts = JSON.parse(JSON.stringify(productsList.products));
       this.tempProducts = [];
@@ -354,9 +453,6 @@ class MainPage extends Page {
       amountControlValueTo.textContent = inputAmountTo.value;
       filter.category = [];
       filter.brand = [];
-
-      const arrCategory = this.filterProduct('category');
-      const arrBrand = this.filterProduct('brand');
 
       for (let i = 0; i < arrCategory.length; i += 1) {
         const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
@@ -378,6 +474,8 @@ class MainPage extends Page {
     this.showCards(this.copyProducts, productContainer, filterHeaderAmount);
 
     sortSelect.addEventListener('change', () => {
+      this.params.sort = sortSelect.value;
+      syncURL(this.params);
       this.copyProducts = sorting(this.copyProducts, sortSelect.value);
       this.tempProducts = sorting(this.tempProducts, sortSelect.value);
       filter.category.length || filter.brand.length ? (filter.sort = false) : (filter.sort = true);
@@ -388,6 +486,118 @@ class MainPage extends Page {
       }
     });
 
+    // window.addEventListener('popstate', () => {
+    //   this.params = transformToURLParams();
+    //   const filterURL = filterParam(this.params);
+
+    //   filter.brand = filterURL.brand;
+    //   filter.category = filterURL.category;
+    //   filter.price.min = filterURL.price.min;
+    //   filter.price.max = filterURL.price.max;
+    //   filter.stock.min = filterURL.stock.min;
+    //   filter.stock.max = filterURL.stock.max;
+
+    //   for (let i = 0; i < arrCategory.length; i += 1) {
+    //     const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
+    //     if (filter.category.includes(arrCategory[i]) && !category.checked) {
+    //       category.checked = true;
+    //     } else if (!filter.category.includes(arrCategory[i]) && category.checked) {
+    //       category.checked = false;
+    //     } else if (!filter.category.includes(arrCategory[i])) {
+    //       category.checked = false;
+    //     }
+    //   }
+
+    //   for (let i = 0; i < arrBrand.length; i += 1) {
+    //     const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
+    //     if (filter.brand.includes(arrBrand[i]) && !brand.checked) {
+    //       brand.checked = true;
+    //     } else if (!filter.brand.includes(arrBrand[i]) && brand.checked) {
+    //       brand.checked = false;
+    //     }
+
+    //   }
+
+    //   if(this.params.sort?.length) {
+    //     sortSelect.value = this.params.sort;
+    //     this.copyProducts = sorting(this.copyProducts, sortSelect.value);
+    //   } else {
+    //     sortSelect.value = '0';
+    //   }
+
+    //   if(this.params.search?.length) {
+    //     sortSearch.value = this.params.search;
+    //   } else {
+    //     sortSearch.value = '';
+    //   }
+
+    //   inputPriceFrom.value = `${filter.price.min}`;
+    //   inputPriceTo.value = `${filter.price.max}`;
+    //   priceControlValueFrom.textContent = inputPriceFrom.value;
+    //   priceControlValueTo.textContent = inputPriceTo.value;
+    //   inputAmountFrom.value = `${filter.stock.min}`;
+    //   inputAmountTo.value = `${filter.stock.max}`
+    //   amountControlValueFrom.textContent = inputAmountFrom.value;
+    //   amountControlValueTo.textContent = inputAmountTo.value;
+
+    //   this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+    //   this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    // })
+
+    if (window.location.search.length) {
+      this.params = transformToURLParams();
+      const filterURL = filterParam(this.params);
+
+      filter.brand = filterURL.brand;
+      filter.category = filterURL.category;
+      filter.price.min = filterURL.price.min;
+      filter.price.max = filterURL.price.max;
+      filter.stock.min = filterURL.stock.min;
+      filter.stock.max = filterURL.stock.max;
+
+      if (filter.category.length) {
+        for (let i = 0; i < arrCategory.length; i += 1) {
+          const category = filterGroupCategory1.children[1].children[i].children[0] as HTMLInputElement;
+          if (filter.category.includes(arrCategory[i])) {
+            category.checked = true;
+          }
+        }
+      }
+
+      if (filter.brand.length) {
+        for (let i = 0; i < arrBrand.length; i += 1) {
+          const brand = filterGroupCategory2.children[1].children[i].children[0] as HTMLInputElement;
+          if (filter.brand.includes(arrBrand[i])) {
+            brand.checked = true;
+          }
+        }
+      }
+
+      if (this.params.sort?.length) {
+        sortSelect.value = this.params.sort;
+        this.copyProducts = sorting(this.copyProducts, sortSelect.value);
+      }
+
+      if (this.params.search?.length) {
+        sortSearch.value = this.params.search;
+      }
+
+      if (this.params.view === 'small') {
+        productContainer.classList.add('change_view');
+      }
+
+      inputPriceFrom.value = `${filter.price.min}`;
+      inputPriceTo.value = `${filter.price.max}`;
+      priceControlValueFrom.textContent = inputPriceFrom.value;
+      priceControlValueTo.textContent = inputPriceTo.value;
+      inputAmountFrom.value = `${filter.stock.min}`;
+      inputAmountTo.value = `${filter.stock.max}`;
+      amountControlValueFrom.textContent = inputAmountFrom.value;
+      amountControlValueTo.textContent = inputAmountTo.value;
+
+      this.tempProducts = filteredItems(this.copyProducts, filter, sortSearch.value);
+      this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+    }
     return this.container;
   }
 }

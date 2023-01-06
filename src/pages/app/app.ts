@@ -11,6 +11,7 @@ export const enum PageIds {
   GoodsPage = 'goods',
   BasketPage = 'cart',
 }
+
 const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
   ? JSON.parse(localStorage.getItem('itemsInBasket')!)
   : [];
@@ -24,6 +25,7 @@ export const sumItemInBasket = document.querySelector('.item__text-sum');
 const linkToCart = document.querySelector('#link_to_cart');
 const linkToMain = document.querySelector('#link_to_main');
 /*sumItemInBasket!.innerHTML=`${itemsInBasket.reduce((acc:number, el:number):number => (acc + productsList.products[el-1].price), 0).toString()} $`;*/
+
 
 class App {
   private static container = document.getElementById('root') as HTMLElement;
@@ -51,70 +53,25 @@ class App {
     }
   }
 
-  private enableRouteChange() {
-    //   window.addEventListener('hashchange', () => {
-    //     const hash = window.location.hash.slice(1);
-    //     App.renderNewPage(hash);
-    //   });
-    /*window.addEventListener('beforeunload', () => {
-      console.log('rrrrr');
-      this.changeRoute(``);
-    });*/
-  }
 
   private getCurrentRoute() {
     return window.location.pathname.split('/').filter(Boolean)[0];
+
   }
 
   private changeRoute(route: string) {
     history.pushState({}, '', `/${route}`);
-    App.renderNewPage(this.getCurrentRoute());
+    App.renderNewPage(route);
   }
 
-  run() {
-    console.log(itemsInBasket);
 
+  run() {
+    window.addEventListener('popstate', () => {
+      App.renderNewPage(this.getCurrentRoute());
+    });
     if (window.location.pathname === '/') {
       history.pushState({}, '', `/main`);
     }
-
-    window.addEventListener('popstate', (event) => {
-      this.changeRoute(`${document.location.pathname.slice(1)}`);
-    });
-    window.addEventListener('beforeunload', (e) => {
-      e.preventDefault();
-      console.log('rrrrr');
-      this.changeRoute(``);
-    });
-    /* window.addEventListener('unload', () => {
-        this.changeRoute(`${document.location.pathname.slice(1)}`);
-        console.log('rrrrr');
-        console.log("the location href is changed!");
-          });
-
-      /*window.addEventListener("beforeunload", function () {
-        let oldHref = document.location.href,
-          bodyDOM = document.querySelector("body");
-        function checkModifiedBody() {
-          let tmp = document.querySelector("body");
-          if (tmp != bodyDOM) {
-            bodyDOM = tmp;
-            observer.observe(bodyDOM!, config);
-          }
-        }
-        const observer = new MutationObserver(function (mutations) {
-          if (oldHref != document.location.href) {
-            oldHref = document.location.href;
-            console.log("the location href is changed!");
-            window.requestAnimationFrame(checkModifiedBody)
-          }
-        });
-        const config = {
-          childList: true,
-          subtree: true
-        };
-        observer.observe(bodyDOM!, config);
-      }, false);*/
 
     linkToCart?.addEventListener('click', () => {
       this.changeRoute('cart');
@@ -123,15 +80,12 @@ class App {
       this.changeRoute('main');
     });
 
-    this.enableRouteChange();
     App.renderNewPage(this.getCurrentRoute());
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 1);
+
     uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
-    countItemInBasket!.innerHTML = itemsInBasket.length.toString();
-    console.log(countItemInBasket!.innerHTML);
-    sumItemInBasket!.innerHTML = `${itemsInBasket
+    countItemInBasket.innerHTML = itemsInBasket.length.toString();
+    console.log(countItemInBasket.innerHTML);
+    sumItemInBasket.innerHTML = `${itemsInBasket
       .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
       .toString()} $`;
   }

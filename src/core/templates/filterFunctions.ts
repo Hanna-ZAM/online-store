@@ -1,4 +1,4 @@
-import { ProductType } from './product';
+import productsList, { ProductType } from './product';
 
 type Filter = {
   category: string[];
@@ -85,23 +85,28 @@ export function filteredItems(productItem: ProductType[], filter: Filter, val: s
 }
 
 export function sorting(arr: ProductType[], value: string) {
-  if (value === '1') {
-    arr.sort((a: ProductType, b: ProductType) => (a.price > b.price ? 1 : -1));
-  }
-  if (value === '2') {
-    arr.sort((a: ProductType, b: ProductType) => (a.price < b.price ? 1 : -1));
-  }
-  if (value === '3') {
-    arr.sort((a: ProductType, b: ProductType) => (a.rating > b.rating ? 1 : -1));
-  }
-  if (value === '4') {
-    arr.sort((a: ProductType, b: ProductType) => (a.rating < b.rating ? 1 : -1));
-  }
-  if (value === '5') {
-    arr.sort((a: ProductType, b: ProductType) => (a.discountPercentage > b.discountPercentage ? 1 : -1));
-  }
-  if (value === '6') {
-    arr.sort((a: ProductType, b: ProductType) => (a.discountPercentage < b.discountPercentage ? 1 : -1));
+  switch (value) {
+    case '1':
+      arr.sort((a: ProductType, b: ProductType) => (a.price > b.price ? 1 : -1));
+      break;
+    case '2':
+      arr.sort((a: ProductType, b: ProductType) => (a.price < b.price ? 1 : -1));
+      break;
+    case '3':
+      arr.sort((a: ProductType, b: ProductType) => (a.rating > b.rating ? 1 : -1));
+      break;
+    case '4':
+      arr.sort((a: ProductType, b: ProductType) => (a.rating < b.rating ? 1 : -1));
+      break;
+    case '5':
+      arr.sort((a: ProductType, b: ProductType) => (a.discountPercentage > b.discountPercentage ? 1 : -1));
+      break;
+    case '6':
+      arr.sort((a: ProductType, b: ProductType) => (a.discountPercentage < b.discountPercentage ? 1 : -1));
+      break;
+    case '0':
+      arr = [...productsList.products];
+      break;
   }
 
   return arr;

@@ -65,6 +65,7 @@ html {
   position: relative;
 }
 .item__link{
+  cursor: pointer;
   position: relative;
   display: flex;
   flex-direction: column;

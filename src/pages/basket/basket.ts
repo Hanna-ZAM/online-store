@@ -1,7 +1,7 @@
 import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
 
-import { /*itemsInBasket, */ sumItemInBasket /*, uniqueItemsInBasket */ } from '../../pages/app/app';
+import App, { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
 import {
   changeBasket,
   changeQuantity,
@@ -10,14 +10,15 @@ import {
   confirm,
 } from '../../core/templates/function';
 
-let itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
-  ?*/ JSON.parse(localStorage.getItem('itemsInBasket')!)/*
-  : []*/;
-let uniqueItemsInBasket = new Set(itemsInBasket);
-console.log(itemsInBasket);
-console.log('uniqueItemsInBasket' + uniqueItemsInBasket);
-console.log(localStorage);
-
+// const itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
+//   ?*/ JSON.parse(
+//   localStorage.getItem('itemsInBasket')!
+// ); /*
+//   : []*/
+// let uniqueItemsInBasket = new Set(itemsInBasket);
+// console.log(itemsInBasket);
+// console.log('uniqueItemsInBasket' + uniqueItemsInBasket);
+// console.log(localStorage);
 
 export const enum Promo {
   promo5 = '5',
@@ -25,7 +26,6 @@ export const enum Promo {
   promo8 = '8',
 }
 const discountArr: Array<number> = [];
-
 
 class BasketPage extends Page {
   static TextObject = {
@@ -37,10 +37,12 @@ class BasketPage extends Page {
   }
 
   createBasketItem(n: number): HTMLElement {
-    let itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
-    ?*/ JSON.parse(localStorage.getItem('itemsInBasket')!)/*
-    : []*/;
-  let uniqueItemsInBasket = new Set(itemsInBasket);
+    // const itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
+    // ?*/ JSON.parse(
+    //   localStorage.getItem('itemsInBasket')!
+    // ); /*
+    // : []*/
+    // const uniqueItemsInBasket = new Set(itemsInBasket);
     const item = this.createElement('', 'li', 'basket-item');
     item.setAttribute('id', `${[...uniqueItemsInBasket][n]}`);
     const buttonDel = this.createElement('Delete X', 'p', 'basket-item__del');
@@ -139,34 +141,34 @@ class BasketPage extends Page {
       end = uniqueItemsInBasket.size;
     }
     countPage.innerHTML = ` Page ${pageNum} from ${pageCount} `;
-if (!(uniqueItemsInBasket.size === 0)) {
-    for (let i = start; i < end; i++) {
-      const item = this.createBasketItem(i);
-      basketList.appendChild(item);
-      const btnMinus = item.children[1].children[3].children[0].children[0];
-      const btnPlus = item.children[1].children[3].children[0].children[2];
-      const btnDel = item.children[0];
+    if (!(uniqueItemsInBasket.size === 0)) {
+      for (let i = start; i < end; i++) {
+        const item = this.createBasketItem(i);
+        basketList.appendChild(item);
+        const btnMinus = item.children[1].children[3].children[0].children[0];
+        const btnPlus = item.children[1].children[3].children[0].children[2];
+        const btnDel = item.children[0];
 
-      btnDel.addEventListener('click', (e) => {
-        uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
-        console.log(uniqueItemsInBasket);
-        this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
-      });
-
-      btnMinus.addEventListener('click', () => {
-        if (item.children[1].children[3].children[0].children[1].innerHTML === '1') {
-          uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
+        btnDel.addEventListener('click', (e) => {
+          deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
+          console.log(uniqueItemsInBasket);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
-        } else {
-          changeQuantity(item, 'down');
-        }
-      });
+        });
 
-      btnPlus.addEventListener('click', () => {
-        changeQuantity(item, 'up');
-      });
+        btnMinus.addEventListener('click', () => {
+          if (item.children[1].children[3].children[0].children[1].innerHTML === '1') {
+            deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
+            this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
+          } else {
+            changeQuantity(item, 'down');
+          }
+        });
+
+        btnPlus.addEventListener('click', () => {
+          changeQuantity(item, 'up');
+        });
+      }
     }
-  }
     return basketList;
   }
 
@@ -392,7 +394,7 @@ if (!(uniqueItemsInBasket.size === 0)) {
             changeBasket(id, false);
             console.log(itemsInBasket);
           } else {
-            uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
+            deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
             this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
           }
         });
@@ -414,7 +416,7 @@ if (!(uniqueItemsInBasket.size === 0)) {
         });
 
         btnDel.addEventListener('click', (e) => {
-          uniqueItemsInBasket = deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
+          deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
           console.log(uniqueItemsInBasket);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
         });
@@ -440,6 +442,10 @@ if (!(uniqueItemsInBasket.size === 0)) {
     const buttonCheckout = this.createElement('Proceed to checkout', 'button', 'button');
     const buttonContinue = this.createElement('Continue shopping', 'button', 'button');
     buttonContinue.classList.add('button-anti');
+    buttonContinue.addEventListener('click', () => {
+      history.pushState({}, '', `/main`);
+      App.renderNewPage('main');
+    });
     flexContainer2.appendChild(buttonCheckout);
     flexContainer2.appendChild(buttonContinue);
     buttonCheckout.addEventListener('click', (e) => {

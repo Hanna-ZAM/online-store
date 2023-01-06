@@ -46,15 +46,12 @@ export function transformToURLParams() {
 }
 
 export function filterParam(obj: Query) {
-
   obj.category ? (filter.category = obj.category?.split(',')) : (filter.category = []);
   obj.brand ? (filter.brand = obj.brand?.split(',')) : (filter.brand = []);
   obj.priceFrom ? (filter.price.min = +obj.priceFrom) : (filter.price.min = 10);
   obj.priceTo ? (filter.price.max = +obj.priceTo) : (filter.price.max = 1749);
   obj.stockFrom ? (filter.stock.min = +obj.stockFrom) : (filter.stock.min = 2);
   obj.stockTo ? (filter.stock.max = +obj.stockTo) : (filter.stock.max = 150);
-
-
 
   return filter;
 }

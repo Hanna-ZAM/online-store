@@ -1,7 +1,7 @@
-import { /* itemsInBasket, */ countItemInBasket, sumItemInBasket /*, uniqueItemsInBasket*/ } from '../../pages/app/app';
+import { itemsInBasket, countItemInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
 import productsList from '../../core/templates/product';
-let itemsInBasket: Array<number> = JSON.parse(localStorage.getItem('itemsInBasket')!);
-let uniqueItemsInBasket = new Set(itemsInBasket);
+// let itemsInBasket: Array<number> = JSON.parse(localStorage.getItem('itemsInBasket')!);
+// let uniqueItemsInBasket = new Set(itemsInBasket);
 
 export function changeBasket(Id: number, add = true): Array<number> {
   if (add) {
@@ -13,7 +13,11 @@ export function changeBasket(Id: number, add = true): Array<number> {
   sumItemInBasket.innerHTML = `${itemsInBasket
     .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
     .toString()} $`;
-  uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
+  uniqueItemsInBasket.clear();
+  createUniqueItemsInBasket(itemsInBasket);
+  console.log('uniqueItemsInBasket: ' + uniqueItemsInBasket.size);
+  console.log();
+
   return itemsInBasket;
 }
 export function createUniqueItemsInBasket(arr: Array<number>): Set<number> {
@@ -91,9 +95,9 @@ export function confirm(arr: Array<boolean>, element: HTMLElement) {
       window.location.href = '';
       console.log('111111111');
     }, 5000);
-    itemsInBasket = [];
+    itemsInBasket.length = 0;
     localStorage.setItem('itemsInBasket', JSON.stringify(itemsInBasket));
-    uniqueItemsInBasket = new Set([]);
+    uniqueItemsInBasket.clear();
     return element;
   }
 }

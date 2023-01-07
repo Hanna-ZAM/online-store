@@ -2,7 +2,7 @@ import './main.css';
 import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
 
-import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
+import App, { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
 import { syncURL, Query, transformToURLParams, filterParam } from '../../core/templates/queryFunction';
 import { changeBasket } from '../../core/templates/function';
@@ -82,10 +82,15 @@ class MainPage extends Page {
     cardContainer.append(cardName);
     cardContainer.append(cardPrice);
 
+    btnOpenCard.addEventListener('click', () => {
+      history.pushState({}, '', `/goods/${arr[i].id}`);
+      App.renderNewPage('goods');
+    });
+
     btnAddBasket.addEventListener('click', () => {
       if (!btnAddBasket.classList.contains('added_in_cart')) {
         btnAddBasket.classList.add('added_in_cart');
-        btnAddBasket.innerText = 'in cart';
+        btnAddBasket.innerText = 'drop from cart';
 
         changeBasket(i + 1);
         /*countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
@@ -117,7 +122,7 @@ class MainPage extends Page {
 
     if (itemsInBasket.includes(arr[i].id)) {
       btnAddBasket.classList.add('added_in_cart');
-      btnAddBasket.innerText = 'in cart';
+      btnAddBasket.innerText = 'drop from cart';
     } else {
       btnAddBasket.classList.remove('added_in_cart');
       btnAddBasket.innerText = 'add to cart';

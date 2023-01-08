@@ -84,7 +84,7 @@ class MainPage extends Page {
 
     btnOpenCard.addEventListener('click', () => {
       history.pushState({}, '', `/goods/${arr[i].id}`);
-      App.renderNewPage('goods');
+      App.renderNewPage(`/goods/${arr[i].id}`);
     });
 
     btnAddBasket.addEventListener('click', () => {
@@ -115,6 +115,13 @@ class MainPage extends Page {
     } else {
       btnAddBasket.classList.remove('added_in_cart');
       btnAddBasket.innerText = 'add to cart';
+    }
+    if (this.params.view === 'small') {
+      cardName.style.display = 'none';
+      cardPrice.style.display = 'none';
+      cardContainer.style.height = '20vh';
+      btnOpenCard.style.height = '85%';
+      btnAddBasket.style.height = '25%';
     }
     return cardContainer;
   }
@@ -366,12 +373,12 @@ class MainPage extends Page {
 
     const arrOptions = [
       'Sorting',
-      'Price ascending',
-      'Price descending',
-      'Rating ascending',
-      'Rating descending',
-      'Discount ascending',
-      'Discount descending',
+      'Price asc',
+      'Price desc',
+      'Rating asc',
+      'Rating desc',
+      'Discount asc',
+      'Discount desc',
     ];
 
     for (let i = 0; i < arrOptions.length; i += 1) {
@@ -397,8 +404,10 @@ class MainPage extends Page {
       syncURL(this.params);
     });
 
+    const sortContainerBtn = this.createElement('', 'div', 'sort__container_buttons');
     const changeView = this.createElement('Change view', 'button', 'sort__change_view');
-    sortContainer.appendChild(changeView);
+    sortContainer.appendChild(sortContainerBtn);
+    sortContainerBtn.appendChild(changeView);
 
     changeView.addEventListener('click', () => {
       changeView.classList.add('yellow_color');
@@ -409,15 +418,17 @@ class MainPage extends Page {
         productContainer.classList.add('change_view');
         this.params.view = 'small';
         syncURL(this.params);
+        this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
       } else {
         productContainer.classList.remove('change_view');
         this.params.view = 'big';
         syncURL(this.params);
+        this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
       }
     });
 
     const copyLink = this.createElement('Copy link', 'button', 'sort__copy_link');
-    sortContainer.appendChild(copyLink);
+    sortContainerBtn.appendChild(copyLink);
 
     copyLink.addEventListener('click', () => {
       navigator.clipboard.writeText(window.location.href);
@@ -430,7 +441,7 @@ class MainPage extends Page {
     });
 
     const sortReset = this.createElement('Reset filters', 'button', 'sort__reset');
-    sortContainer.appendChild(sortReset);
+    sortContainerBtn.appendChild(sortReset);
 
     sortReset.addEventListener('click', () => {
       sortReset.classList.add('yellow_color');

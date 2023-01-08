@@ -4,7 +4,7 @@
 .goods__container_title {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
@@ -14,6 +14,7 @@
   color: #1B0C11;
   text-transform: uppercase;
   padding: 0 0 20px 0;
+  gap: 0 5px;
 }
 .goods__hr {
   background-color: #000000;
@@ -28,18 +29,30 @@
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
+  gap: 0 20px;
 }
 .goods__image_wrapper {
   display: flex;
   flex-direction: column;
+  gap: 25px 10px;
+  width: 100%;
+}
+.goods__image_wrapper-small {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
   gap: 10px 10px;
 }
 .goods__image_main {
-  width: 90%;
+  max-width: 100%;
+  width: fit-content;
+  height: 35vh;
 }
 .goods__image {
   cursor: pointer;
-  width: 30%;
+  width: 20%;
+  height: 20%;
+  object-fit: cover;
 }
 .goods__action_wrapper {
   display: flex;
@@ -106,4 +119,26 @@
 }
 .added_in_cart {
   background-color: rgb(163, 71, 71);
+}
+.goods__not_found {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 2em;
+  line-height: 59px;
+  text-align: center;
+  color: #1B0C11;
+  height: calc(100vh - 350px);
+  margin-top: 100px;
+}
+
+@media screen and (max-width: 680px) {
+
+  .goods__container_main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+  }
+  
 }

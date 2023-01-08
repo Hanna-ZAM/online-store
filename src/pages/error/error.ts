@@ -30,7 +30,6 @@ class ErrorPage extends Page {
       'error__number'
     );
     const errorBtn = this.createElement('Homepage', 'div', 'error__btn');
-    // errorBtn.setAttribute('href', '/#main');
     errorBtn.addEventListener('click', () => {
       history.pushState({}, '', `/main`);
       App.renderNewPage('main');

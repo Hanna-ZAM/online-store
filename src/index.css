@@ -141,6 +141,7 @@ main {
   font-size: 24px;
 }
 
+
 .button-small{
   padding: 5px 5px;
   background-color:rgba(255, 255, 255, 0.0);
@@ -152,6 +153,11 @@ main {
   margin-bottom: 20px;
   margin-left: 15px;
   margin-right: 35px;
+} 
+
+.button:hover, .button-small:hover{
+  background-color: rgb(36, 46, 39);
+  border: 1.5px solid rgb(36, 46, 39);
 }
 
 .button-anti{
@@ -159,6 +165,11 @@ main {
   background-color:rgba(255, 255, 255, 0.0);
   color: #72927A;
   margin-left: 30px;
+}
+.button-anti:hover{
+  color: rgb(36, 46, 39);
+  background-color:rgba(255, 255, 255, 0.0);
+  border: 1.5px solid rgb(36, 46, 39);
 }
 
 .flex-container-colomn{

@@ -1,4 +1,4 @@
-import { itemsInBasket, countItemInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
+import App, { itemsInBasket, countItemInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
 import productsList from '../../core/templates/product';
 // let itemsInBasket: Array<number> = JSON.parse(localStorage.getItem('itemsInBasket')!);
 // let uniqueItemsInBasket = new Set(itemsInBasket);
@@ -91,8 +91,9 @@ export function confirm(arr: Array<boolean>, element: HTMLElement) {
     thanks.classList.add('modal-window');
     thanks.classList.add('thanks-window');
     element.replaceWith(thanks);
-    /*const timeReload: ReturnType<typeof setTimeout> = */ setTimeout(function () {
-      window.location.href = '';
+    setTimeout(function () {
+      history.pushState({}, '', `/main`);
+      App.renderNewPage('main');
       console.log('111111111');
     }, 5000);
     itemsInBasket.length = 0;

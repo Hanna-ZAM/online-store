@@ -56,8 +56,9 @@ class App {
   }
 
   private normalizePathName() {
+    const search = window.location.search;
     const pathname = window.location.pathname.replace(/\/$/, '');
-    history.pushState({}, '', pathname);
+    history.pushState({}, '', `${pathname}${search}`);
   }
 
   run() {

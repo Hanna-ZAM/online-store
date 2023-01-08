@@ -16,19 +16,16 @@ class GoodsPage extends Page {
     const goodsTitleContainer = this.createElement('', 'div', 'goods__container_title');
     this.container.appendChild(goodsContainer);
     goodsContainer.appendChild(goodsTitleContainer);
-    const goodsStore = this.createElement('Store', 'span', 'goods__store');
+    const goodsStore = this.createElement('Store  >', 'span', 'goods__store');
     goodsStore.addEventListener('click', () => {
       history.pushState({}, '', `/main`);
       App.renderNewPage('main');
     });
-    const goodsCategory = this.createElement(`${productsList.products[id - 1].category}`, 'span', 'goods__category');
-    const goodsBrand = this.createElement(`${productsList.products[id - 1].brand}`, 'span', 'goods__brand');
+    const goodsCategory = this.createElement(`${productsList.products[id - 1].category}  >`, 'span', 'goods__category');
+    const goodsBrand = this.createElement(`${productsList.products[id - 1].brand}  >`, 'span', 'goods__brand');
     const goodsTitle = this.createElement(`${productsList.products[id - 1].title}`, 'span', 'goods__title');
     const hr = this.createElement('', 'hr', 'goods__hr');
-    const sing1 = this.createElement('>', 'span', 'sing');
-    const sing2 = this.createElement('>', 'span', 'sing');
-    const sing3 = this.createElement('>', 'span', 'sing');
-    goodsTitleContainer.append(goodsStore, sing1, goodsCategory, sing2, goodsBrand, sing3, goodsTitle);
+    goodsTitleContainer.append(goodsStore, goodsCategory, goodsBrand, goodsTitle);
     goodsContainer.append(hr);
 
     const goodsMainContainer = this.createElement('', 'div', 'goods__container_main');
@@ -56,12 +53,14 @@ class GoodsPage extends Page {
     goodsImageMain.setAttribute('src', `${productsList.products[id - 1].images[0]}`);
     goodsImageMain.setAttribute('alt', `${productsList.products[id - 1].title}`);
     goodsImageWrapper.append(goodsImageMain);
+    const goodsImageWrapperSmall = this.createElement('', 'div', 'goods__image_wrapper-small');
+    goodsImageWrapper.appendChild(goodsImageWrapperSmall);
     for (let i = 0; i < productsList.products[id - 1].images.length; i += 1) {
       if (index.includes(i)) {
         const goodsImage = this.createElement('', 'img', 'goods__image');
         goodsImage.setAttribute('src', `${productsList.products[id - 1].images[i]}`);
         goodsImage.setAttribute('alt', `${productsList.products[id - 1].title}`);
-        goodsImageWrapper.append(goodsImage);
+        goodsImageWrapperSmall.append(goodsImage);
         goodsImage.addEventListener('click', () => {
           goodsImageMain.setAttribute('src', `${productsList.products[id - 1].images[i]}`);
           goodsImageMain.setAttribute('alt', `${productsList.products[id - 1].title}`);

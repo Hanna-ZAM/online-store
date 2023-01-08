@@ -38,18 +38,35 @@ class GoodsPage extends Page {
     goodsMainContainer.appendChild(goodsImageWrapper);
     goodsMainContainer.appendChild(goodsActionWrapper);
     const goodsImageMain = this.createElement('', 'img', 'goods__image_main');
+
+    const dataSize: string[] = [];
+    const index: number[] = [];
+    for (let i = 0; i < productsList.products[id - 1].images.length; i += 1) {
+      const url = productsList.products[id - 1].images[i];
+      const req = new XMLHttpRequest();
+      req.open('GET', url, false);
+      req.send();
+      const weight = req.getResponseHeader('content-length') || '';
+      if (!dataSize.includes(weight)) {
+        dataSize.push(weight);
+        index.push(i);
+      }
+    }
+
     goodsImageMain.setAttribute('src', `${productsList.products[id - 1].images[0]}`);
     goodsImageMain.setAttribute('alt', `${productsList.products[id - 1].title}`);
     goodsImageWrapper.append(goodsImageMain);
     for (let i = 0; i < productsList.products[id - 1].images.length; i += 1) {
-      const goodsImage = this.createElement('', 'img', 'goods__image');
-      goodsImage.setAttribute('src', `${productsList.products[id - 1].images[i]}`);
-      goodsImage.setAttribute('alt', `${productsList.products[id - 1].title}`);
-      goodsImageWrapper.append(goodsImage);
-      goodsImage.addEventListener('click', () => {
-        goodsImageMain.setAttribute('src', `${productsList.products[id - 1].images[i]}`);
-        goodsImageMain.setAttribute('alt', `${productsList.products[id - 1].title}`);
-      });
+      if (index.includes(i)) {
+        const goodsImage = this.createElement('', 'img', 'goods__image');
+        goodsImage.setAttribute('src', `${productsList.products[id - 1].images[i]}`);
+        goodsImage.setAttribute('alt', `${productsList.products[id - 1].title}`);
+        goodsImageWrapper.append(goodsImage);
+        goodsImage.addEventListener('click', () => {
+          goodsImageMain.setAttribute('src', `${productsList.products[id - 1].images[i]}`);
+          goodsImageMain.setAttribute('alt', `${productsList.products[id - 1].title}`);
+        });
+      }
     }
     const ActionTitle = this.createElement(`${productsList.products[id - 1].title}`, 'div', 'action__title');
     const ActionDescription = this.createElement(

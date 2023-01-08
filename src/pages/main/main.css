@@ -103,7 +103,7 @@
 }
 .sort__select {
   padding: 30px 0 30px 35px;
-  width: 50%;
+  width: 40%;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -119,7 +119,7 @@
 }
 .sort__search {
   padding: 30px 55px 30px 35px;
-  width: 50%;
+  width: 40%;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -139,11 +139,19 @@
 .sort__search::-webkit-search-results-decoration { 
   display: none;
 }
+.sort__container_buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+  gap: 0 10px;
+}
 .sort__reset,
 .sort__copy_link,
 .sort__change_view {
   cursor: pointer;
-  width: 15%;
+  width: 100%;
+  height: 100%;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -294,15 +302,95 @@ input[type="range"] {
 
 @media screen and (max-width: 1070px) {
 
-
   .container{
     width: calc(100% - 20px);
+  }
+  .filter__container {
+    padding: 0 5px 10px 5px;
+  }
+  .filer__group {
+    gap: 0 15px;
   }
   .card__name {
     font-size: .8rem;
   }
   .checkbox {
     font-size: 18px;
+  }
+
+}
+
+@media screen and (max-width: 760px) {
+
+  .filer__group {
+    flex-direction: column;
+    gap: 15px 0;
+  }
+  .filter__group_form {
+    height: 205px;
+  }
+  .filter__group_category {
+    background-color: #EDEDED;
+    padding: 0 0 30px 15px;
+    width: 100%;
+  }
+  .filter__group_category:last-child {
+    width: 100%;
+  }
+  .card__name {
+    font-size: 1rem;
+  }
+  .checkbox {
+    font-size: 24px;
+  }
+  .price__control,
+  .amount__control {
+    width: 97%;
+    margin: 15px 0 25px 0;
+  }
+  .sort__container {
+    flex-direction: column;
+    gap: 10px 0;
+    margin: 15px 0 0 0;
+  }
+  .sort__select {
+    padding: 20px 0 20px 35px;
+    width: 100%;
+  }
+  .sort__search {
+    padding: 20px 55px 20px 35px;
+    width: 100%;
+  }
+  .sort__container_buttons {
+    width: 100%;
+  }
+  .sort__reset,
+  .sort__copy_link,
+  .sort__change_view {
+    padding: 20px 0 20px 0;
+  }
+  .product__container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    gap: 10px 5px;
+    margin: 70px 0 0 0;
+  }
+  .change_view {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+
+  .card__name {
+    font-size: .8rem;
+  }
+  .checkbox {
+    font-size: 18px;
+  }
+  .change_view {
+    grid-template-columns: repeat(2, 1fr);
   }
 
 }

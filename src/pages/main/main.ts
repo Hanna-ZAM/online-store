@@ -2,7 +2,7 @@ import './main.css';
 import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
 
-import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
+import App, { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
 import { syncURL, Query, transformToURLParams, filterParam } from '../../core/templates/queryFunction';
 import { changeBasket } from '../../core/templates/function';
@@ -82,21 +82,20 @@ class MainPage extends Page {
     cardContainer.append(cardName);
     cardContainer.append(cardPrice);
 
+    btnOpenCard.addEventListener('click', () => {
+      history.pushState({}, '', `/goods/${arr[i].id}`);
+      App.renderNewPage('goods');
+    });
+
     btnAddBasket.addEventListener('click', () => {
       if (!btnAddBasket.classList.contains('added_in_cart')) {
         btnAddBasket.classList.add('added_in_cart');
-        btnAddBasket.innerText = 'in cart';
-
+        btnAddBasket.innerText = 'drop from cart';
         changeBasket(i + 1);
-        /*countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
-        sumItemInBasket!.innerHTML = `${itemsInBasket
-          .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-          .toString()} $`;*/
       } else {
         btnAddBasket.classList.remove('added_in_cart');
         btnAddBasket.innerText = 'add to cart';
         const indexArr: number[] = [];
-
         itemsInBasket.forEach((item, index) => {
           if (item === arr[i].id) {
             indexArr.push(index);
@@ -106,18 +105,13 @@ class MainPage extends Page {
           itemsInBasket.splice(indexArr[i], 1);
         }
         uniqueItemsInBasket.delete(arr[i].id);
-
-        // countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
-        // sumItemInBasket!.innerHTML = `${itemsInBasket
-        //   .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-        //   .toString()} $`;
         changeBasket(i + 1, false);
       }
     });
 
     if (itemsInBasket.includes(arr[i].id)) {
       btnAddBasket.classList.add('added_in_cart');
-      btnAddBasket.innerText = 'in cart';
+      btnAddBasket.innerText = 'drop from cart';
     } else {
       btnAddBasket.classList.remove('added_in_cart');
       btnAddBasket.innerText = 'add to cart';

@@ -53,6 +53,7 @@ class App {
 
   private getCurrentRoute() {
     return window.location.pathname.split('/').filter(Boolean)[0];
+    // return window.location.pathname.slice(1);
   }
 
   private changeRoute(route: string) {
@@ -64,6 +65,7 @@ class App {
     window.addEventListener('popstate', () => {
       App.renderNewPage(this.getCurrentRoute());
     });
+
     if (window.location.pathname === '/') {
       history.pushState({}, '', `/main`);
     }

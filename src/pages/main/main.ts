@@ -84,7 +84,7 @@ class MainPage extends Page {
 
     btnOpenCard.addEventListener('click', () => {
       history.pushState({}, '', `/goods/${arr[i].id}`);
-      App.renderNewPage('goods');
+      App.renderNewPage(`/goods/${arr[i].id}`);
     });
 
     btnAddBasket.addEventListener('click', () => {

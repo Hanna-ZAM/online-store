@@ -4,6 +4,7 @@ import App from '../app/app';
 import productsList from '../../core/templates/product';
 import { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { changeBasket } from '../../core/templates/function';
+import { createModalWindow } from '../../core/templates/modal';
 
 class GoodsPage extends Page {
   constructor(id: string) {
@@ -11,7 +12,6 @@ class GoodsPage extends Page {
   }
 
   getGoodsPage(id: number) {
-    // history.pushState({}, '', `/goods/${id}`);
     const goodsContainer = this.createElement('', 'div', 'goods__container');
     const goodsTitleContainer = this.createElement('', 'div', 'goods__container_title');
     this.container.appendChild(goodsContainer);
@@ -122,7 +122,21 @@ class GoodsPage extends Page {
         changeBasket(id, false);
       }
     });
-    goodsBtnBuy.addEventListener('click', () => {});
+    goodsBtnBuy.addEventListener('click', () => {
+      if (!itemsInBasket.includes(id)) {
+        changeBasket(id);
+      }
+      history.pushState({}, '', '/cart');
+      const modal = createModalWindow();
+      const header = document.querySelector('.header');
+      header?.appendChild(modal);
+      modal.addEventListener('click', (e: Event) => {
+        if (e.target == modal && modal.children[0] !== e.target) {
+          header?.removeChild(modal);
+        }
+      });
+      App.renderNewPage('cart');
+    });
 
     if (itemsInBasket.includes(id)) {
       goodsBtnAdd.classList.add('added_in_cart');

@@ -2,23 +2,8 @@ import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
 
 import App, { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
-import {
-  changeBasket,
-  changeQuantity,
-  deleteItemFromBasket,
-  checkCorrectInput,
-  confirm,
-} from '../../core/templates/function';
-
-// const itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
-//   ?*/ JSON.parse(
-//   localStorage.getItem('itemsInBasket')!
-// ); /*
-//   : []*/
-// let uniqueItemsInBasket = new Set(itemsInBasket);
-// console.log(itemsInBasket);
-// console.log('uniqueItemsInBasket' + uniqueItemsInBasket);
-// console.log(localStorage);
+import { changeBasket, changeQuantity, deleteItemFromBasket } from '../../core/templates/function';
+import { createModalWindow } from '../../core/templates/modal';
 
 export const enum Promo {
   promo5 = '5',
@@ -37,12 +22,6 @@ class BasketPage extends Page {
   }
 
   createBasketItem(n: number): HTMLElement {
-    // const itemsInBasket: Array<number> = /*localStorage['itemsInBasket']
-    // ?*/ JSON.parse(
-    //   localStorage.getItem('itemsInBasket')!
-    // ); /*
-    // : []*/
-    // const uniqueItemsInBasket = new Set(itemsInBasket);
     const item = this.createElement('', 'li', 'basket-item');
     item.setAttribute('id', `${[...uniqueItemsInBasket][n]}`);
     const buttonDel = this.createElement('Delete X', 'p', 'basket-item__del');
@@ -149,7 +128,7 @@ class BasketPage extends Page {
         const btnPlus = item.children[1].children[3].children[0].children[2];
         const btnDel = item.children[0];
 
-        btnDel.addEventListener('click', (e) => {
+        btnDel.addEventListener('click', () => {
           deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
           console.log(uniqueItemsInBasket);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
@@ -170,162 +149,6 @@ class BasketPage extends Page {
       }
     }
     return basketList;
-  }
-
-  createModalWindow(): HTMLElement {
-    let correctName = false;
-    let correctPhone = false;
-    let correctAdress = false;
-    let correctEmail = false;
-    let correctCard = false;
-    let correctCVV = false;
-    let correctDate = false;
-    const arrCorrect: Array<boolean> = [];
-    const arrNum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-    const background = this.createElement('', 'div', 'back');
-    const modalWindow = this.createElement('', 'div', 'modal-window');
-    const personal = this.createElement('Personal detail', 'p', 'modal__title');
-    const inputName = this.createElement('', 'input', 'input');
-    inputName.setAttribute('type', 'text');
-    inputName.setAttribute('placeholder', 'Name');
-    inputName.addEventListener('input', (e) => {
-      correctName = checkCorrectInput(inputName as HTMLInputElement, 2, 3);
-      console.log('correctName ' + correctName);
-      arrCorrect[0] = correctName;
-      return correctName;
-    });
-    const inputPhone = this.createElement('', 'input', 'input');
-    inputPhone.setAttribute('type', 'tel');
-    inputPhone.setAttribute('placeholder', 'Phone: +375290000000');
-    inputPhone.addEventListener('input', (e) => {
-      (inputPhone as HTMLInputElement).value = `+${(inputPhone as HTMLInputElement).value
-        .split('')
-        .slice(1)
-        .filter((el) => arrNum.includes(Number(el)))
-        .join('')}`;
-      correctPhone = checkCorrectInput(inputPhone as HTMLInputElement, 1, 10, '+');
-      console.log('correctPhone ' + correctPhone);
-      arrCorrect[1] = correctPhone;
-      return correctPhone;
-    });
-
-    const inputAdress = this.createElement('', 'input', 'input');
-    inputAdress.setAttribute('type', 'text');
-    inputAdress.setAttribute('placeholder', 'Adress');
-    inputAdress.addEventListener('input', (e) => {
-      correctAdress = checkCorrectInput(inputAdress as HTMLInputElement, 3, 5);
-      console.log('correctAdress ' + correctAdress);
-      arrCorrect[2] = correctAdress;
-      return correctAdress;
-    });
-
-    const inputEmail = this.createElement('', 'input', 'input');
-    inputEmail.setAttribute('type', 'email');
-    inputEmail.setAttribute('placeholder', 'Email');
-    inputEmail.addEventListener('input', (e) => {
-      const value = (inputEmail as HTMLInputElement).value.split('@');
-      correctEmail = value.length === 2 && value[1].split('.').length > 1;
-      console.log('correctEmail ' + correctEmail);
-      arrCorrect[3] = correctEmail;
-      return correctEmail;
-    });
-
-    modalWindow.appendChild(personal);
-    modalWindow.appendChild(inputName);
-    modalWindow.appendChild(inputPhone);
-    modalWindow.appendChild(inputAdress);
-    modalWindow.appendChild(inputEmail);
-
-    const flexContainerCard = this.createElement('', 'div', 'flex-container');
-    flexContainerCard.classList.add('flex-container__card');
-    const inputImg = this.createElement('', 'img', 'input__img');
-    inputImg.setAttribute('alt', 'type of card');
-    inputImg.setAttribute('src', '../img/card.svg');
-    const card = this.createElement('Card detail', 'p', 'modal__title');
-    modalWindow.appendChild(card);
-    const inputCard = this.createElement('', 'input', 'input');
-    inputCard.setAttribute('type', 'text');
-    inputCard.setAttribute('placeholder', 'Number card');
-
-    inputCard.addEventListener('input', (e) => {
-      if ((inputCard as HTMLInputElement).value.split('')[0] === '5') {
-        (inputImg as HTMLImageElement).src = '../img/mastercard.svg';
-      } else if ((inputCard as HTMLInputElement).value.split('')[0] === '4') {
-        (inputImg as HTMLImageElement).src = '../img/visa.svg';
-      } else if ((inputCard as HTMLInputElement).value.split('')[0] === '2') {
-        (inputImg as HTMLImageElement).src = '../img/mir.png';
-      } else {
-        (inputImg as HTMLImageElement).src = '../img/card.svg';
-      }
-      (inputCard as HTMLInputElement).value = (inputCard as HTMLInputElement).value
-        .split('')
-        .filter((el) => arrNum.includes(Number(el)))
-        .join('');
-      if ((inputCard as HTMLInputElement).value.length > 16) {
-        (inputCard as HTMLInputElement).value = (inputCard as HTMLInputElement).value.substr(0, 16);
-      }
-      correctCard = (inputCard as HTMLInputElement).value.length === 16;
-      console.log('correctCard ' + correctCard);
-      arrCorrect[4] = correctCard;
-      return correctCard;
-    });
-    const flexContainerCardSmall = this.createElement('', 'div', 'flex-container');
-    flexContainerCardSmall.classList.add('flex-container__small');
-
-    const inputCvv = this.createElement('', 'input', 'input-small');
-    inputCvv.setAttribute('type', 'number');
-    inputCvv.setAttribute('placeholder', 'CVV');
-    inputCvv.addEventListener('input', (e) => {
-      let value = (inputCvv as HTMLInputElement).value;
-      if (value.length > 3) {
-        (inputCvv as HTMLInputElement).value = (inputCvv as HTMLInputElement).value.substr(0, 3);
-      }
-      value = (inputCvv as HTMLInputElement).value;
-      correctCVV = value.length === 3;
-      console.log('correctCVV ' + correctCVV);
-      arrCorrect[5] = correctCVV;
-      return correctCVV;
-    });
-    const inputDate = this.createElement('', 'input', 'input-small');
-    inputDate.setAttribute('type', 'text');
-    inputDate.setAttribute('placeholder', 'Date');
-    inputDate.addEventListener('input', (e) => {
-      (inputDate as HTMLInputElement).value = (inputDate as HTMLInputElement).value
-        .split('')
-        .filter((el) => arrNum.includes(Number(el)))
-        .join('');
-      if ((inputDate as HTMLInputElement).value.length > 2) {
-        if (Number((inputDate as HTMLInputElement).value.slice(0, 2)) > 12) {
-          (inputDate as HTMLInputElement).value = '12';
-        } else if (Number((inputDate as HTMLInputElement).value.slice(0, 2)) < 1) {
-          (inputDate as HTMLInputElement).value = '01';
-        }
-        if ((inputDate as HTMLInputElement).value.length > 4) {
-          (inputDate as HTMLInputElement).value = (inputDate as HTMLInputElement).value.substr(0, 4);
-        }
-        (inputDate as HTMLInputElement).value = `${(inputDate as HTMLInputElement).value.slice(
-          0,
-          2
-        )}/${(inputDate as HTMLInputElement).value.slice(2, 4)}`;
-      }
-      correctDate = (inputDate as HTMLInputElement).value.length === 5;
-      arrCorrect[6] = correctDate;
-      return correctDate;
-    });
-
-    flexContainerCard.appendChild(inputCard);
-    flexContainerCardSmall.appendChild(inputImg);
-    flexContainerCardSmall.appendChild(inputCvv);
-    flexContainerCardSmall.appendChild(inputDate);
-    flexContainerCard.appendChild(flexContainerCardSmall);
-    modalWindow.appendChild(flexContainerCard);
-    const buttonModal = this.createElement('Confirm', 'button', 'button');
-    buttonModal.classList.add('modal-button');
-    buttonModal.addEventListener('click', (e) => confirm(arrCorrect, modalWindow));
-    modalWindow.appendChild(buttonModal);
-    background.appendChild(modalWindow);
-    return background;
   }
 
   render() {
@@ -390,7 +213,7 @@ class BasketPage extends Page {
               Number(item.children[1].children[3].children[0].children[1].innerHTML) * price
             } $`;
             console.log(itemsInBasket);
-            const numEl = itemsInBasket.indexOf(+id);
+            // const numEl = itemsInBasket.indexOf(+id);
             changeBasket(id, false);
             console.log(itemsInBasket);
           } else {
@@ -409,13 +232,13 @@ class BasketPage extends Page {
               Number(item.children[1].children[3].children[0].children[1].innerHTML) * price
             } $`;
             console.log(itemsInBasket);
-            const numEl = itemsInBasket.indexOf(+id);
+            // const numEl = itemsInBasket.indexOf(+id);
             changeBasket(id, true);
             console.log(itemsInBasket);
           }
         });
 
-        btnDel.addEventListener('click', (e) => {
+        btnDel.addEventListener('click', () => {
           deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
           console.log(uniqueItemsInBasket);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
@@ -448,8 +271,8 @@ class BasketPage extends Page {
     });
     flexContainer2.appendChild(buttonCheckout);
     flexContainer2.appendChild(buttonContinue);
-    buttonCheckout.addEventListener('click', (e) => {
-      const modal = this.createModalWindow();
+    buttonCheckout.addEventListener('click', () => {
+      const modal = createModalWindow();
       const header = document.querySelector('.header');
       header?.appendChild(modal);
       modal.addEventListener('click', (e: Event) => {
@@ -477,8 +300,8 @@ class BasketPage extends Page {
           (Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - Number(promoDiscount))) / 100
         ).toString()} $`;
         discount.innerHTML = `Discount: ${
-          Number(sumItemInBasket!.innerHTML.split(' ')[0]) -
-          Math.ceil((Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100)
+          Number(sumItemInBasket.innerHTML.split(' ')[0]) -
+          Math.ceil((Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100)
         } $`;
       }
     });
@@ -502,19 +325,19 @@ class BasketPage extends Page {
             discountArr.push(d);
             promoDiscount = discountArr.reduce((sum: number, cur: number) => sum + cur, 0);
             totalWithoutDiscont.classList.remove('no-visible');
-            totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket!.innerHTML}`;
+            totalWithoutDiscont.innerHTML = `Total price: ${sumItemInBasket.innerHTML}`;
             total.innerHTML = `Total price: ${Math.ceil(
               (Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
             ).toString()} $`;
             discount.innerHTML = `Discount: ${
-              Number(sumItemInBasket!.innerHTML.split(' ')[0]) -
-              Math.ceil((Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100)
+              Number(sumItemInBasket.innerHTML.split(' ')[0]) -
+              Math.ceil((Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100)
             } $`;
             const promoItem = this.createElement(`promo${d} is used, discount ${d}%`, 'p', 'promoitem');
             promoContainer.appendChild(promoItem);
             const promoBtn = this.createElement(`del`, 'button', 'button-small');
             promoItem.appendChild(promoBtn);
-            promoBtn.addEventListener('click', (e) => {
+            promoBtn.addEventListener('click', () => {
               promoContainer.removeChild(promoItem);
               discountArr.splice(discountArr.indexOf(d), 1);
               if (discountArr.length === 0) {
@@ -522,11 +345,11 @@ class BasketPage extends Page {
               }
               promoDiscount = discountArr.reduce((sum: number, cur: number) => sum + cur, 0);
               total.innerHTML = `Total price: ${Math.ceil(
-                (Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
+                (Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100
               ).toString()} $`;
               discount.innerHTML = `Discount: ${
-                Number(sumItemInBasket!.innerHTML.split(' ')[0]) -
-                Math.ceil((Number(sumItemInBasket!.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100)
+                Number(sumItemInBasket.innerHTML.split(' ')[0]) -
+                Math.ceil((Number(sumItemInBasket.innerHTML.split(' ')[0]) * (100 - promoDiscount)) / 100)
               } $`;
             });
             promoText.innerHTML = `Try promo10, promo8, promo5`;

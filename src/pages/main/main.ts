@@ -91,17 +91,11 @@ class MainPage extends Page {
       if (!btnAddBasket.classList.contains('added_in_cart')) {
         btnAddBasket.classList.add('added_in_cart');
         btnAddBasket.innerText = 'drop from cart';
-
         changeBasket(i + 1);
-        /*countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
-        sumItemInBasket!.innerHTML = `${itemsInBasket
-          .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-          .toString()} $`;*/
       } else {
         btnAddBasket.classList.remove('added_in_cart');
         btnAddBasket.innerText = 'add to cart';
         const indexArr: number[] = [];
-
         itemsInBasket.forEach((item, index) => {
           if (item === arr[i].id) {
             indexArr.push(index);
@@ -111,11 +105,6 @@ class MainPage extends Page {
           itemsInBasket.splice(indexArr[i], 1);
         }
         uniqueItemsInBasket.delete(arr[i].id);
-
-        // countItemInBasket!.innerHTML = `${itemsInBasket.length}`;
-        // sumItemInBasket!.innerHTML = `${itemsInBasket
-        //   .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
-        //   .toString()} $`;
         changeBasket(i + 1, false);
       }
     });

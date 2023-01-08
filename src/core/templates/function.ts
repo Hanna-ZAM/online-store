@@ -51,7 +51,7 @@ export function changeQuantity(item: HTMLElement, direction: string): HTMLElemen
     item.children[1].children[3].children[0].children[3].children[0].innerHTML = `${
       Number(item.children[1].children[3].children[0].children[1].innerHTML) * price
     } $`;
-    const numEl = itemsInBasket.indexOf(+id);
+    // const numEl = itemsInBasket.indexOf(+id);
   }
   return item;
 }
@@ -91,7 +91,7 @@ export function confirm(arr: Array<boolean>, element: HTMLElement) {
     thanks.classList.add('modal-window');
     thanks.classList.add('thanks-window');
     element.replaceWith(thanks);
-    const timeReload: ReturnType<typeof setTimeout> = setTimeout(function () {
+    /*const timeReload: ReturnType<typeof setTimeout> = */ setTimeout(function () {
       window.location.href = '';
       console.log('111111111');
     }, 5000);

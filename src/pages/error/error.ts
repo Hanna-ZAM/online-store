@@ -31,8 +31,8 @@ class ErrorPage extends Page {
     );
     const errorBtn = this.createElement('Homepage', 'div', 'error__btn');
     errorBtn.addEventListener('click', () => {
-      history.pushState({}, '', `/main`);
-      App.renderNewPage('main');
+      history.pushState({}, '', `/`);
+      App.renderNewPage('');
     });
     title.append(errorPage);
     title.append(errorNumber);

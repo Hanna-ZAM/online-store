@@ -21,8 +21,8 @@ class GoodsPage extends Page {
       goodsContainer.appendChild(goodsTitleContainer);
       const goodsStore = this.createElement('Store  >', 'span', 'goods__store');
       goodsStore.addEventListener('click', () => {
-        history.pushState({}, '', `/main`);
-        App.renderNewPage('main');
+        history.pushState({}, '', `/`);
+        App.renderNewPage('');
       });
       const goodsCategory = this.createElement(
         `${productsList.products[id - 1].category}  >`,

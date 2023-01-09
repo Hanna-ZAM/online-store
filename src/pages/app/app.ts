@@ -7,7 +7,7 @@ import productsList from '../../core/templates/product';
 import { createUniqueItemsInBasket } from '../../core/templates/function';
 
 export const enum PageIds {
-  MainPage = 'main',
+  MainPage = '',
   GoodsPage = 'goods',
   BasketPage = 'cart',
 }
@@ -29,11 +29,11 @@ class App {
   static renderNewPage(idPage: string) {
     App.container.innerHTML = '';
     let page: Page | null = null;
-
+    console.log(idPage);
     if (idPage === PageIds.MainPage) {
       page = new MainPage(idPage);
     } else if (idPage.includes(PageIds.GoodsPage) && idPage.split('/').filter(Boolean).length === 2) {
-      page = new GoodsPage(idPage);
+      page = new GoodsPage('goods');
     } else if (idPage === PageIds.BasketPage) {
       page = new BasketPage(idPage);
     } else {
@@ -47,7 +47,9 @@ class App {
   }
 
   private getCurrentRoute() {
-    return window.location.pathname.replace(/^\//, '');
+    // return window.location.pathname.replace(/^\//, '');
+    const rout = window.location.pathname.slice(1);
+    return rout;
   }
 
   private changeRoute(route: string) {
@@ -57,7 +59,9 @@ class App {
 
   private normalizePathName() {
     const search = window.location.search;
+    console.log('before: ' + window.location.pathname);
     const pathname = window.location.pathname.replace(/\/$/, '');
+    console.log('after: ' + pathname);
     history.pushState({}, '', `${pathname}${search}`);
   }
 
@@ -67,14 +71,14 @@ class App {
     window.addEventListener('popstate', () => {
       App.renderNewPage(this.getCurrentRoute());
     });
-    if (window.location.pathname === '/') {
-      history.pushState({}, '', `/main`);
-    }
+    // if (window.location.pathname === '/') {
+    //   history.pushState({}, '', `/main`);
+    // }
     linkToCart?.addEventListener('click', () => {
       this.changeRoute('cart');
     });
     linkToMain?.addEventListener('click', () => {
-      this.changeRoute('main');
+      this.changeRoute('');
     });
 
     App.renderNewPage(this.getCurrentRoute());

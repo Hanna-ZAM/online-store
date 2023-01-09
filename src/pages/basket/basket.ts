@@ -288,8 +288,8 @@ class BasketPage extends Page {
     });
     buttonContinue.classList.add('button-anti');
     buttonContinue.addEventListener('click', () => {
-      history.pushState({}, '', `/main`);
-      App.renderNewPage('main');
+      history.pushState({}, '', `/`);
+      App.renderNewPage('');
     });
     flexContainer2.appendChild(buttonCheckout);
     flexContainer2.appendChild(buttonContinue);

@@ -19,7 +19,6 @@ class ErrorPage extends Page {
   }
 
   render() {
-    // const title = this.createTitle(ErrorPage.TextObject[this.errorType]);
     const title = this.createElement('', 'div', 'error__container');
     this.container.appendChild(title);
 
@@ -31,8 +30,8 @@ class ErrorPage extends Page {
     );
     const errorBtn = this.createElement('Homepage', 'div', 'error__btn');
     errorBtn.addEventListener('click', () => {
-      history.pushState({}, '', `/main`);
-      App.renderNewPage('main');
+      history.pushState({}, '', `/`);
+      App.renderNewPage('');
     });
     title.append(errorPage);
     title.append(errorNumber);

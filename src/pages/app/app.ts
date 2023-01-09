@@ -7,7 +7,7 @@ import productsList from '../../core/templates/product';
 import { createUniqueItemsInBasket } from '../../core/templates/function';
 
 export const enum PageIds {
-  MainPage = 'main',
+  MainPage = '',
   GoodsPage = 'goods',
   BasketPage = 'cart',
 }
@@ -34,11 +34,10 @@ class App {
     console.log('new');
     App.container.innerHTML = '';
     let page: Page | null = null;
-
     if (idPage === PageIds.MainPage) {
       page = new MainPage(idPage);
-    } else if (idPage === PageIds.GoodsPage) {
-      page = new GoodsPage(idPage);
+    } else if (idPage.includes(PageIds.GoodsPage) && idPage.split('/').filter(Boolean).length === 2) {
+      page = new GoodsPage('goods');
     } else if (idPage === PageIds.BasketPage) {
       page = new BasketPage(idPage);
     } else {
@@ -52,7 +51,8 @@ class App {
   }
 
   private getCurrentRoute() {
-    return window.location.pathname.split('/').filter(Boolean)[0];
+    const rout = window.location.pathname.slice(1);
+    return rout;
   }
 
   private changeRoute(route: string) {
@@ -61,22 +61,17 @@ class App {
   }
 
   run() {
+    this.normalizePathName();
     window.addEventListener('popstate', () => {
       App.renderNewPage(this.getCurrentRoute());
     });
-    if (window.location.pathname === '/') {
-      history.pushState({}, '', `/main`);
-    }
-
     linkToCart?.addEventListener('click', () => {
       this.changeRoute('cart');
     });
     linkToMain?.addEventListener('click', () => {
-      this.changeRoute('main');
+      this.changeRoute('');
     });
-
     App.renderNewPage(this.getCurrentRoute());
-
     uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
     countItemInBasket.innerHTML = itemsInBasket.length.toString();
     console.log(countItemInBasket.innerHTML);

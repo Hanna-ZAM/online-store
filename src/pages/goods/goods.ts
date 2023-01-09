@@ -21,8 +21,8 @@ class GoodsPage extends Page {
       goodsContainer.appendChild(goodsTitleContainer);
       const goodsStore = this.createElement('Store  >', 'span', 'goods__store');
       goodsStore.addEventListener('click', () => {
-        history.pushState({}, '', `/main`);
-        App.renderNewPage('main');
+        history.pushState({}, '', `/`);
+        App.renderNewPage('');
       });
       const goodsCategory = this.createElement(
         `${productsList.products[id - 1].category}  >`,
@@ -177,7 +177,6 @@ class GoodsPage extends Page {
   render() {
     const url = window.location.pathname.split('/').filter(Boolean)[1];
     this.getGoodsPage(url);
-
     return this.container;
   }
 }

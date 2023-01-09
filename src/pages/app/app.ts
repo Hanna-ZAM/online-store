@@ -47,7 +47,6 @@ class App {
   }
 
   private getCurrentRoute() {
-    // return window.location.pathname.replace(/^\//, '');
     const rout = window.location.pathname.slice(1);
     return rout;
   }
@@ -63,26 +62,21 @@ class App {
     const pathname = window.location.pathname.replace(/\/$/, '');
     console.log('after: ' + pathname);
     history.pushState({}, '', `${pathname}${search}`);
+    console.log(window.location.pathname);
   }
 
   run() {
     this.normalizePathName();
-
     window.addEventListener('popstate', () => {
       App.renderNewPage(this.getCurrentRoute());
     });
-    // if (window.location.pathname === '/') {
-    //   history.pushState({}, '', `/main`);
-    // }
     linkToCart?.addEventListener('click', () => {
       this.changeRoute('cart');
     });
     linkToMain?.addEventListener('click', () => {
       this.changeRoute('');
     });
-
     App.renderNewPage(this.getCurrentRoute());
-
     uniqueItemsInBasket = createUniqueItemsInBasket(itemsInBasket);
     countItemInBasket.innerHTML = itemsInBasket.length.toString();
     sumItemInBasket.innerHTML = `${itemsInBasket

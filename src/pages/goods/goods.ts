@@ -176,6 +176,8 @@ class GoodsPage extends Page {
 
   render() {
     const url = window.location.pathname.split('/').filter(Boolean)[1];
+    console.log('goods page: ' + url);
+
     this.getGoodsPage(url);
 
     return this.container;

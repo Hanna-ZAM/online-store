@@ -19,7 +19,6 @@ class ErrorPage extends Page {
   }
 
   render() {
-    // const title = this.createTitle(ErrorPage.TextObject[this.errorType]);
     const title = this.createElement('', 'div', 'error__container');
     this.container.appendChild(title);
 

@@ -1,15 +1,10 @@
 import './main.css';
 import Page from '../../core/templates/page';
 import productsList, { ProductType } from '../../core/templates/product';
-
 import App, { itemsInBasket, uniqueItemsInBasket } from '../app/app';
 import { filter, filteredItems, sorting } from '../../core/templates/filterFunctions';
 import { syncURL, Query, transformToURLParams, filterParam } from '../../core/templates/queryFunction';
 import { changeBasket } from '../../core/templates/function';
-// const itemsInBasket: Array<number> = localStorage.getItem('itemsInBasket')
-//   ? JSON.parse(localStorage.getItem('itemsInBasket')!)
-//   : [];
-// const uniqueItemsInBasket = new Set(itemsInBasket);
 
 type T = keyof Query;
 

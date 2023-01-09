@@ -29,7 +29,6 @@ class App {
   static renderNewPage(idPage: string) {
     App.container.innerHTML = '';
     let page: Page | null = null;
-    console.log(idPage);
     if (idPage === PageIds.MainPage) {
       page = new MainPage(idPage);
     } else if (idPage.includes(PageIds.GoodsPage) && idPage.split('/').filter(Boolean).length === 2) {
@@ -58,11 +57,8 @@ class App {
 
   private normalizePathName() {
     const search = window.location.search;
-    console.log('before: ' + window.location.pathname);
     const pathname = window.location.pathname.replace(/\/$/, '');
-    console.log('after: ' + pathname);
     history.pushState({}, '', `${pathname}${search}`);
-    console.log(window.location.pathname);
   }
 
   run() {

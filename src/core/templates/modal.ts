@@ -150,7 +150,14 @@ export function createModalWindow() {
   modalWindow.appendChild(flexContainerCard);
   const buttonModal = createElement('Confirm', 'button', 'button');
   buttonModal.classList.add('modal-button');
-  buttonModal.addEventListener('click', () => confirm(arrCorrect, modalWindow));
+  buttonModal.addEventListener('click', () => {
+    confirm(arrCorrect, modalWindow);
+    setTimeout(function () {
+      const header = document.querySelector('.header');
+      header?.removeChild(background);
+    }, 5000);
+  });
+
   modalWindow.appendChild(buttonModal);
   background.appendChild(modalWindow);
   return background;

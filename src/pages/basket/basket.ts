@@ -2,7 +2,7 @@ import Page from '../../core/templates/page';
 import productsList from '../../core/templates/product';
 
 import App, { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
-import { changeBasket, changeQuantity, deleteItemFromBasket } from '../../core/templates/function';
+import { /* changeBasket,*/ changeQuantity, deleteItemFromBasket } from '../../core/templates/function';
 import { createModalWindow } from '../../core/templates/modal';
 
 export const enum Promo {
@@ -19,6 +19,10 @@ class BasketPage extends Page {
 
   constructor(id: string) {
     super(id);
+  }
+  private changeRoute(route: string) {
+    history.pushState({}, '', `/${route}`);
+    App.renderNewPage(route);
   }
 
   createBasketItem(n: number): HTMLElement {
@@ -105,19 +109,24 @@ class BasketPage extends Page {
       });
     }
 
-    const pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
+    let pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
     if (pageNum > pageCount) {
       pageNum = pageCount;
     }
     const start = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value);
     if (uniqueItemsInBasket.size === 0) {
       const item = this.createElement('Basket is empty', 'li', 'basket-item');
+      countPage.innerHTML = ` Page 1 from 1 `;
       basketList.appendChild(item);
     }
 
     let end = start + Number((itemsPerPage as HTMLInputElement).value);
     if (end > uniqueItemsInBasket.size) {
       end = uniqueItemsInBasket.size;
+    }
+    if (pageCount === 0) {
+      pageCount = 1;
+      pageNum = 1;
     }
     countPage.innerHTML = ` Page ${pageNum} from ${pageCount} `;
     if (!(uniqueItemsInBasket.size === 0)) {
@@ -132,6 +141,11 @@ class BasketPage extends Page {
           deleteItemFromBasket(Number(item.id), [...uniqueItemsInBasket]);
           console.log(uniqueItemsInBasket);
           this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
+          /* if (uniqueItemsInBasket.size === 0) {
+            const item = this.createElement('Basket is empty', 'li', 'basket-item');
+            countPage.innerHTML = ` Page 1 from 1 `;
+            basketList.appendChild(item);
+          }*/
         });
 
         btnMinus.addEventListener('click', () => {
@@ -189,11 +203,15 @@ class BasketPage extends Page {
     flexContainer1.appendChild(flexContainer3);
     flexContainer1.appendChild(itemPerPageText);
     this.container.append(flexContainer1);
-    let countItem = 0;
+    /*const countItem = 1;*/
 
-    const basketList = this.createElement('', 'ul', 'basket-list');
-
-    for (let i = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value); i < itemsInBasket.length; i++) {
+    let basketList = this.createElement('', 'ul', 'basket-list');
+    if (uniqueItemsInBasket.size === 0) {
+      const item = this.createElement('Basket is empty', 'li', 'basket-item');
+      countPage.innerHTML = ` Page 1 from 1 `;
+      basketList.appendChild(item);
+    }
+    /*for (let i = (pageNum - 1) * Number((itemsPerPage as HTMLInputElement).value); i < itemsInBasket.length; i++) {
       if (!itemsInBasket.slice(0, i).includes(itemsInBasket[i])) {
         const item = this.createBasketItem(i);
         basketList.appendChild(item);
@@ -247,7 +265,8 @@ class BasketPage extends Page {
       if (countItem === Number((itemsPerPage as HTMLInputElement).value)) {
         i = itemsInBasket.length;
       }
-    }
+    }*/
+    basketList = this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
 
     this.container.append(basketList);
 
@@ -264,6 +283,9 @@ class BasketPage extends Page {
     flexContainer2.classList.add('page-end');
     const buttonCheckout = this.createElement('Proceed to checkout', 'button', 'button');
     const buttonContinue = this.createElement('Continue shopping', 'button', 'button');
+    buttonContinue.addEventListener('click', () => {
+      this.changeRoute('main');
+    });
     buttonContinue.classList.add('button-anti');
     buttonContinue.addEventListener('click', () => {
       history.pushState({}, '', `/`);

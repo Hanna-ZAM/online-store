@@ -390,6 +390,9 @@ footer {
 .input__img {
   height: 35px;
 }
+.invalid{
+  background-image: url('./img/invalid.jpeg');
+}
 
 @media screen and (max-width: 1070px) {
   .basket-item__title{

@@ -16,6 +16,7 @@ export function createModalWindow() {
   const personal = createElement('Personal detail', 'p', 'modal__title');
   const inputName = createElement('', 'input', 'input');
   inputName.setAttribute('type', 'text');
+  inputName.setAttribute('id', 'name_input');
   inputName.setAttribute('placeholder', 'Name');
   inputName.addEventListener('input', () => {
     correctName = checkCorrectInput(inputName as HTMLInputElement, 2, 3);
@@ -25,6 +26,7 @@ export function createModalWindow() {
   });
   const inputPhone = createElement('', 'input', 'input');
   inputPhone.setAttribute('type', 'tel');
+  inputPhone.setAttribute('id', 'tel_input');
   inputPhone.setAttribute('placeholder', 'Phone: +375290000000');
   inputPhone.addEventListener('input', () => {
     (inputPhone as HTMLInputElement).value = `+${(inputPhone as HTMLInputElement).value
@@ -40,6 +42,7 @@ export function createModalWindow() {
 
   const inputAdress = createElement('', 'input', 'input');
   inputAdress.setAttribute('type', 'text');
+  inputAdress.setAttribute('id', 'adress_input');
   inputAdress.setAttribute('placeholder', 'Adress');
   inputAdress.addEventListener('input', () => {
     correctAdress = checkCorrectInput(inputAdress as HTMLInputElement, 3, 5);
@@ -50,6 +53,7 @@ export function createModalWindow() {
 
   const inputEmail = createElement('', 'input', 'input');
   inputEmail.setAttribute('type', 'email');
+  inputEmail.setAttribute('id', 'email_input');
   inputEmail.setAttribute('placeholder', 'Email');
   inputEmail.addEventListener('input', () => {
     const value = (inputEmail as HTMLInputElement).value.split('@');

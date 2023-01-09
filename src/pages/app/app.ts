@@ -60,6 +60,12 @@ class App {
     App.renderNewPage(route);
   }
 
+  private normalizePathName() {
+    const search = window.location.search;
+    const pathname = window.location.pathname.replace(/\/$/, '');
+    history.pushState({}, '', `${pathname}${search}`);
+  }
+
   run() {
     this.normalizePathName();
     window.addEventListener('popstate', () => {

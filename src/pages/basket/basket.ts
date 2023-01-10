@@ -284,7 +284,7 @@ class BasketPage extends Page {
     const buttonCheckout = this.createElement('Proceed to checkout', 'button', 'button');
     const buttonContinue = this.createElement('Continue shopping', 'button', 'button');
     buttonContinue.addEventListener('click', () => {
-      this.changeRoute('main');
+      this.changeRoute('');
     });
     buttonContinue.classList.add('button-anti');
     buttonContinue.addEventListener('click', () => {

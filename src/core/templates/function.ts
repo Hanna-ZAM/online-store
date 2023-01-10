@@ -92,8 +92,8 @@ export function confirm(arr: Array<boolean>, element: HTMLElement) {
     thanks.classList.add('thanks-window');
     element.replaceWith(thanks);
     setTimeout(function () {
-      history.pushState({}, '', `/main`);
-      App.renderNewPage('main');
+      history.pushState({}, '', `/`);
+      App.renderNewPage('');
     }, 5000);
     itemsInBasket.length = 0;
     localStorage.setItem('itemsInBasket', JSON.stringify(itemsInBasket));

@@ -177,6 +177,7 @@ class BasketPage extends Page {
     flexContainer1.classList.add('flex-container-space');
     const itemsPerPage = this.createElement('Item per page: ', 'input', 'items-per-page') as HTMLInputElement;
     itemsPerPage.setAttribute('value', '3');
+    itemsPerPage.setAttribute('min', '1');
     if (this.params.limit && Number(this.params.limit)) {
       itemsPerPage.value = this.params.limit;
     }

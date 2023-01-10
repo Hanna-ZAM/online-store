@@ -10,6 +10,8 @@ export type Query = {
   search?: string;
   sort?: string;
   view?: string;
+  limit?: string;
+  page?: string;
 };
 
 type T = keyof Query;

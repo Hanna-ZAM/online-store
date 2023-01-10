@@ -4,6 +4,7 @@ import productsList from '../../core/templates/product';
 import App, { itemsInBasket, sumItemInBasket, uniqueItemsInBasket } from '../../pages/app/app';
 import { /* changeBasket,*/ changeQuantity, deleteItemFromBasket } from '../../core/templates/function';
 import { createModalWindow } from '../../core/templates/modal';
+import { Query, syncURL, transformToURLParams } from '../../core/templates/queryFunction';
 
 export const enum Promo {
   promo5 = '5',
@@ -13,12 +14,14 @@ export const enum Promo {
 const discountArr: Array<number> = [];
 
 class BasketPage extends Page {
+  params: Query;
   static TextObject = {
     MainTitle: 'Cart',
   };
 
   constructor(id: string) {
     super(id);
+    this.params = {};
   }
   private changeRoute(route: string) {
     history.pushState({}, '', `/${route}`);
@@ -166,24 +169,36 @@ class BasketPage extends Page {
   }
 
   render() {
+    this.params = transformToURLParams();
     const title = this.createTitle(BasketPage.TextObject.MainTitle);
     title.classList.add('main__title');
     this.container.append(title);
     const flexContainer1 = this.createElement('', 'div', 'flex-container');
     flexContainer1.classList.add('flex-container-space');
-    const itemsPerPage = this.createElement('Item per page: ', 'input', 'items-per-page');
+    const itemsPerPage = this.createElement('Item per page: ', 'input', 'items-per-page') as HTMLInputElement;
     itemsPerPage.setAttribute('value', '3');
+    if (this.params.limit && Number(this.params.limit)) {
+      itemsPerPage.value = this.params.limit;
+    }
     itemsPerPage.setAttribute('type', 'number');
     itemsPerPage.addEventListener('input', () => {
+      this.params.limit = itemsPerPage.value;
+      syncURL(this.params);
       this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
     });
     let pageNum = 1;
+
+    if (Number(this.params.page)) {
+      pageNum = Number(this.params.page);
+    }
     const pageCount = Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value));
     const flexContainer3 = this.createElement('', 'div', 'flex-container');
     const arrowMinus = this.createElement(`<`, 'span', 'square');
     arrowMinus.addEventListener('click', () => {
       if (pageNum > 1) {
         pageNum--;
+        this.params.page = pageNum.toString();
+        syncURL(this.params);
         this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
       }
     });
@@ -192,6 +207,8 @@ class BasketPage extends Page {
     arrowPlus.addEventListener('click', () => {
       if (pageNum < Math.ceil(uniqueItemsInBasket.size / Number((itemsPerPage as HTMLInputElement).value))) {
         pageNum++;
+        this.params.page = pageNum.toString();
+        syncURL(this.params);
         this.createBasketList(basketList, pageNum, itemsPerPage, countPage);
       }
     });

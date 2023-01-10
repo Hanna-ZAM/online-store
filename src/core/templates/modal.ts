@@ -77,6 +77,7 @@ export function createModalWindow() {
   const card = createElement('Card detail', 'p', 'modal__title');
   modalWindow.appendChild(card);
   const inputCard = createElement('', 'input', 'input');
+  inputCard.setAttribute('id', 'card_input');
   inputCard.setAttribute('type', 'text');
   inputCard.setAttribute('placeholder', 'Number card');
 
@@ -106,6 +107,7 @@ export function createModalWindow() {
   flexContainerCardSmall.classList.add('flex-container__small');
 
   const inputCvv = createElement('', 'input', 'input-small');
+  inputCvv.setAttribute('id', 'CVV_input');
   inputCvv.setAttribute('type', 'number');
   inputCvv.setAttribute('placeholder', 'CVV');
   inputCvv.addEventListener('input', () => {
@@ -120,6 +122,7 @@ export function createModalWindow() {
     return correctCVV;
   });
   const inputDate = createElement('', 'input', 'input-small');
+  inputDate.setAttribute('id', 'date_input');
   inputDate.setAttribute('type', 'text');
   inputDate.setAttribute('placeholder', 'Date');
   inputDate.addEventListener('input', () => {
@@ -156,10 +159,12 @@ export function createModalWindow() {
   buttonModal.classList.add('modal-button');
   buttonModal.addEventListener('click', () => {
     confirm(arrCorrect, modalWindow);
-    setTimeout(function () {
-      const header = document.querySelector('.header');
-      header?.removeChild(background);
-    }, 5000);
+    if (confirm(arrCorrect, modalWindow)) {
+      setTimeout(function () {
+        const header = document.querySelector('.header');
+        header?.removeChild(background);
+      }, 5000);
+    }
   });
 
   modalWindow.appendChild(buttonModal);

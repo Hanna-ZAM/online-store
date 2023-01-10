@@ -85,7 +85,8 @@ export function checkCorrectInput(
 
 export function confirm(arr: Array<boolean>, element: HTMLElement) {
   const arr1 = arr.filter((el) => el === true);
-  if ((arr.length = arr1.length)) {
+  console.log(arr1);
+  if (arr.length === arr1.length) {
     const thanks = document.createElement('div');
     thanks.innerHTML = 'Congratulations, your order has been placed.';
     thanks.classList.add('modal-window');
@@ -98,19 +99,29 @@ export function confirm(arr: Array<boolean>, element: HTMLElement) {
     itemsInBasket.length = 0;
     localStorage.setItem('itemsInBasket', JSON.stringify(itemsInBasket));
     uniqueItemsInBasket.clear();
+    countItemInBasket.innerHTML = itemsInBasket.length.toString();
+    sumItemInBasket.innerHTML = `${itemsInBasket
+      .reduce((acc: number, el: number): number => acc + productsList.products[el - 1].price, 0)
+      .toString()} $`;
     return element;
   } else {
     if (!arr[0]) {
-      document.getElementById('name_input')?.classList.add('.invalid');
+      document.getElementById('name_input')?.classList.add('invalid');
     }
     if (!arr[1]) {
-      document.getElementById('tel_input')?.classList.add('.invalid');
+      document.getElementById('tel_input')?.classList.add('invalid');
     }
     if (!arr[2]) {
-      document.getElementById('adress_input')?.classList.add('.invalid');
+      document.getElementById('adress_input')?.classList.add('invalid');
     }
-    if (!arr[3]) {
-      document.getElementById('email_input')?.classList.add('.invalid');
+    if (!arr[4]) {
+      document.getElementById('card_input')?.classList.add('invalid');
+    }
+    if (!arr[5]) {
+      document.getElementById('CVV_input')?.classList.add('invalid');
+    }
+    if (!arr[6]) {
+      document.getElementById('date_input')?.classList.add('invalid');
     }
   }
 }

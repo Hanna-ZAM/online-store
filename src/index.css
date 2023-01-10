@@ -392,6 +392,7 @@ footer {
 }
 .invalid{
   background-image: url('img/invalid.jpg');
+  background-size: cover;
 }
 
 @media screen and (max-width: 1070px) {

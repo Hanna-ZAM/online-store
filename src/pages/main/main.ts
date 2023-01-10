@@ -413,12 +413,20 @@ class MainPage extends Page {
         productContainer.classList.add('change_view');
         this.params.view = 'small';
         syncURL(this.params);
-        this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+        this.showCards(
+          this.tempProducts.length ? this.tempProducts : this.copyProducts,
+          productContainer,
+          filterHeaderAmount
+        );
       } else {
         productContainer.classList.remove('change_view');
         this.params.view = 'big';
         syncURL(this.params);
-        this.showCards(this.tempProducts, productContainer, filterHeaderAmount);
+        this.showCards(
+          this.tempProducts.length ? this.tempProducts : this.copyProducts,
+          productContainer,
+          filterHeaderAmount
+        );
       }
     });
 

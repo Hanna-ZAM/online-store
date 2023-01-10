@@ -94,11 +94,23 @@ export function confirm(arr: Array<boolean>, element: HTMLElement) {
     setTimeout(function () {
       history.pushState({}, '', `/main`);
       App.renderNewPage('main');
-      console.log('111111111');
     }, 5000);
     itemsInBasket.length = 0;
     localStorage.setItem('itemsInBasket', JSON.stringify(itemsInBasket));
     uniqueItemsInBasket.clear();
     return element;
+  } else {
+    if (!arr[0]) {
+      document.getElementById('name_input')?.classList.add('.invalid');
+    }
+    if (!arr[1]) {
+      document.getElementById('tel_input')?.classList.add('.invalid');
+    }
+    if (!arr[2]) {
+      document.getElementById('adress_input')?.classList.add('.invalid');
+    }
+    if (!arr[3]) {
+      document.getElementById('email_input')?.classList.add('.invalid');
+    }
   }
 }

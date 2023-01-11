@@ -114,6 +114,9 @@ export function confirm(arr: Array<boolean>, element: HTMLElement) {
     if (!arr[2]) {
       document.getElementById('adress_input')?.classList.add('invalid');
     }
+    if (!arr[3]) {
+      document.getElementById('email_input')?.classList.add('invalid');
+    }
     if (!arr[4]) {
       document.getElementById('card_input')?.classList.add('invalid');
     }
